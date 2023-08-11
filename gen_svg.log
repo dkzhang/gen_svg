@@ -1,0 +1,3 @@
+14:54:40 [INFO] This is an information message from file src\main.rs at line 107 .
+14:54:40 [WARN] This is a warning message from file src\main.rs at line 108 .
+14:54:40 [ERROR] This is an error message from file src\main.rs at line 109 .

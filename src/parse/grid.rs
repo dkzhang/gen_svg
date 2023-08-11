@@ -1,8 +1,8 @@
 use svg::node::element::tag::Rectangle;
-use crate::shape::{Draw, Path, PathStyle, Rectangle, RectangleStyle};
-use crate::element::{ColumnHeader, Grid, Table};
-use crate::parse::Parameters;
-use crate::shape::text::{Text, TextStyle};
+use crate::shape::{Draw, Path,  Rectangle, Text};
+use crate::element::{ColumnHeader, Grid, RowHeader, Table};
+use crate::config::{Parameters, RectangleStyle, TextStyle};
+use crate::config::{PathStyle};
 
 pub fn convert_grid<'a>(
     g: Grid,
@@ -10,7 +10,7 @@ pub fn convert_grid<'a>(
     y:i32,
     para: &'a Parameters,
     path_style: &'a PathStyle,
-) -> Vec<Box<dyn Draw+ 'a>> {
+) -> (Vec<Box<dyn Draw+ 'a>>, i32, i32) {
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
         id: g.id,
@@ -32,7 +32,7 @@ pub fn convert_grid<'a>(
 
     path.d = d;
     result.push(path);
-    return result;
+    return (result, x + width, y + height);
 }
 
 pub fn convert_column_header<'a>(
@@ -42,7 +42,13 @@ pub fn convert_column_header<'a>(
     para: &'a Parameters,
     rect_style: &'a RectangleStyle,
     text_style: &'a TextStyle,
-) -> Vec<Box<dyn Draw+ 'a>> {
+) -> (Vec<Box<dyn Draw+ 'a>>, i32, i32) {
+    let height = para.head_height;
+    let width = para.cell_width;
+
+    let mut xx= x;
+    let mut yy = y;
+
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
     let mut hy = y;
     for cr in column_header.rows {
@@ -52,27 +58,86 @@ pub fn convert_column_header<'a>(
                 id: None,
                 x: hx,
                 y: hy,
-                width: c.iw * para.head_width,
-                height: para.head_height,
+                width: c.iw * width,
+                height: height,
                 style: rect_style,
             });
             result.push(rect);
 
             let text = Box::new(Text{
                 id: None,
-                x: hx + c.iw * para.head_width / 2,
-                y: hy + para.head_height * 100 /114,
+                x: hx + c.iw * width / 2,
+                y: hy + height * 100 /114,
                 content: c.text.clone(),
                 style: &text_style,
             });
             result.push(text);
 
 
-            hx += c.iw * para.head_width;
+            hx += c.iw * width;
+
+            if hx > xx{
+                xx = hx;
+            }
         }
-        hy += para.cell_height;
+        hy += height;
+        if hy > yy{
+            yy = hy;
+        }
     };
-    return result;
+    return (result, xx, yy);
+}
+
+pub fn convert_row_header<'a>(
+    row_header: RowHeader,
+    x:i32,
+    y:i32,
+    para: &'a Parameters,
+    rect_style: &'a RectangleStyle,
+    text_style: &'a TextStyle,
+) -> (Vec<Box<dyn Draw+ 'a>>, i32, i32) {
+    let height = para.cell_height;
+    let width = para.head_width;
+
+    let mut xx= x;
+    let mut yy = y;
+
+    let mut result: Vec<Box<dyn Draw>> = Vec::new();
+    let mut hx = x;
+    for cc in row_header.cols{
+        let mut hy = y;
+        for r in cc{
+            let rect = Box::new(Rectangle {
+                id: None,
+                x: hx,
+                y: hy,
+                width: width,
+                height: r.ih * height,
+                style: rect_style,
+            });
+            result.push(rect);
+
+            let text = Box::new(Text{
+                id: None,
+                x: hx + width / 2,
+                y: hy + r.ih * height * 100 /114,
+                content: r.text.clone(),
+                style: &text_style,
+            });
+            result.push(text);
+
+            hy += r.ih * height;
+
+            if hy > yy{
+                yy = hy;
+            }
+        }
+        hx += width;
+        if hx > xx{
+            xx = hx;
+        }
+    };
+    return (result, xx, yy);
 }
 
 // pub fn convert_table<'a>(

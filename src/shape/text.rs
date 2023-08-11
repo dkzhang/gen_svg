@@ -1,4 +1,5 @@
 use svg::node::element::Text as svg_Text;
+use crate::config::TextStyle;
 use crate::shape::Draw;
 pub struct Text<'a> {
     pub id: Option<String>,
@@ -10,13 +11,7 @@ pub struct Text<'a> {
     pub style: &'a TextStyle,
 }
 
-pub struct TextStyle {
-    pub font_family: Option<String>,
-    pub font_size: Option<i32>,
-    pub text_anchor: Option<String>,
-    pub fill: Option<String>,
-    pub font_weight: Option<String>,
-}
+
 
 impl Draw for Text<'_> {
     fn draw(&self) -> Box<dyn svg::Node> {

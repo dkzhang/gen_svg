@@ -1,4 +1,5 @@
 use svg::node::element::Polygon as svg_Polygon;
+use crate::config::PolygonStyle;
 use crate::shape::Draw;
 
 pub struct Polygon<'a> {
@@ -9,15 +10,7 @@ pub struct Polygon<'a> {
     pub style: &'a PolygonStyle,
 }
 
-pub struct PolygonStyle {
-    pub fill: Option<String>,
-    pub stroke: Option<String>,
-    pub stroke_width: Option<i32>,
-    pub stroke_opacity: Option<f32>,
-    pub fill_opacity: Option<f32>,
 
-    pub transform: Option<String>,
-}
 
 impl Draw for Polygon<'_>{
     fn draw(&self) -> Box<dyn svg::Node>{

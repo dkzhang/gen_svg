@@ -17,11 +17,13 @@ pub struct Grid{
 }
 
 pub struct RowHeader {
-    pub i_group: i32,
-    pub iy: i32,
-    pub row_headers: Vec<String>,
+    pub cols: Vec<Vec<RowHeaderCell>>,
 }
 
+pub struct RowHeaderCell {
+    pub ih: i32,
+    pub text: String,
+}
 pub struct ColumnHeader {
     pub rows: Vec<Vec<ColumnHeaderCell>>,
 }

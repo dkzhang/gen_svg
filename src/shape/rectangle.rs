@@ -1,4 +1,5 @@
 use svg::node::element::Rectangle as svg_Rectangle;
+use crate::config::RectangleStyle;
 use crate::shape::Draw;
 
 pub struct Rectangle<'a> {
@@ -12,17 +13,6 @@ pub struct Rectangle<'a> {
     pub style: &'a RectangleStyle,
 }
 
-pub struct RectangleStyle {
-    pub fill: Option<String>,
-    pub stroke: Option<String>,
-    pub stroke_width: Option<i32>,
-    pub stroke_opacity: Option<f32>,
-    pub fill_opacity: Option<f32>,
-    pub rx: Option<i32>,
-    pub ry: Option<i32>,
-
-    pub transform: Option<String>,
-}
 
 impl Draw for Rectangle<'_>{
     fn draw(&self) -> Box<dyn svg::Node> {

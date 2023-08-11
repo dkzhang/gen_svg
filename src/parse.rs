@@ -6,8 +6,8 @@
 //     // v_lines: Vec<line>,
 // }
 //
-pub mod parameters;
-pub mod grid;
 
-pub use parameters::*;
+pub mod grid;
+pub mod table;
+
 pub use grid::*;

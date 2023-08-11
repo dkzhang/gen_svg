@@ -1,4 +1,5 @@
-
+use serde::{Deserialize, Serialize};
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Parameters {
     pub head_width: i32,
     pub head_height: i32,
