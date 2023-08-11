@@ -1,25 +1,32 @@
 
+pub struct Table{
+    pub col_headers: ColumnHeader,
+    pub row_groups: Vec<RowGroup>,
+}
+
+pub struct RowGroup{
+    pub header: RowHeader,
+    pub grid: Grid,
+}
+
 pub struct Grid{
     pub id: Option<String>,
 
-    pub i_group: i32,
-    pub ix: i32,
-    pub iy: i32,
     pub iw: i32,
     pub ih: i32,
 }
 
-pub struct GridRowHeader{
+pub struct RowHeader {
     pub i_group: i32,
     pub iy: i32,
     pub row_headers: Vec<String>,
 }
 
-pub struct GridColumnHeader{
-    pub rows: Vec<Vec<GridColumnHeaderCell>>,
+pub struct ColumnHeader {
+    pub rows: Vec<Vec<ColumnHeaderCell>>,
 }
 
-pub struct GridColumnHeaderCell{
+pub struct ColumnHeaderCell {
     pub iw: i32,
     pub text: String,
 }
