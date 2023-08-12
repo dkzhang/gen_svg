@@ -1,6 +1,6 @@
-use svg::node::element::Text as svg_Text;
 use crate::config::TextStyle;
 use crate::shape::Draw;
+use svg::node::element::Text as svg_Text;
 pub struct Text<'a> {
     pub id: Option<String>,
 
@@ -11,13 +11,9 @@ pub struct Text<'a> {
     pub style: &'a TextStyle,
 }
 
-
-
 impl Draw for Text<'_> {
     fn draw(&self) -> Box<dyn svg::Node> {
-        let mut mr = svg_Text::new()
-            .set("x", self.x)
-            .set("y", self.y);
+        let mut mr = svg_Text::new().set("x", self.x).set("y", self.y);
 
         if let Some(id) = &self.id {
             mr = mr.set("id", id.clone());
@@ -41,6 +37,10 @@ impl Draw for Text<'_> {
 
         if let Some(font_weight) = &self.style.font_weight {
             mr = mr.set("font-weight", font_weight.clone());
+        };
+
+        if let Some(dy) = &self.style.dy {
+            mr = mr.set("dy", dy.clone());
         };
 
         mr = mr.add(svg::node::Text::new(self.content.clone()));

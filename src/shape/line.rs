@@ -1,6 +1,6 @@
-use svg::node::element::Line as svg_Line;
 use crate::config::LineStyle;
 use crate::shape::Draw;
+use svg::node::element::Line as svg_Line;
 
 pub struct Line<'a> {
     pub id: Option<String>,
@@ -13,10 +13,8 @@ pub struct Line<'a> {
     pub style: &'a LineStyle,
 }
 
-
-
-impl Draw for Line<'_>{
-    fn draw(&self) -> Box<dyn svg::Node>{
+impl Draw for Line<'_> {
+    fn draw(&self) -> Box<dyn svg::Node> {
         let mut ml = svg_Line::new()
             .set("x1", self.x1)
             .set("y1", self.y1)
@@ -41,7 +39,7 @@ impl Draw for Line<'_>{
             ml = ml.set("stroke-opacity", stroke_opacity);
         };
 
-        if let  Some(stroke_linecap) = &self.style.stroke_linecap {
+        if let Some(stroke_linecap) = &self.style.stroke_linecap {
             ml = ml.set("stroke-linecap", stroke_linecap.clone());
         };
 

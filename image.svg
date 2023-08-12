@@ -1,1 +1,80 @@
-<svg height="300" preserveAspectRatio="xMidYMid meet" viewBox="0 0 400 300" width="400" xmlns="http://www.w3.org/2000/svg"/>
+<svg height="300" preserveAspectRatio="xMidYMid meet" viewBox="0 0 400 300" width="400" xmlns="http://www.w3.org/2000/svg">
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="200" x="60" y="0"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="160" y="5">
+Oct
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="60" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="70" y="15">
+1
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="80" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="90" y="15">
+2
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="100" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="110" y="15">
+3
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="120" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="130" y="15">
+4
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="140" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="150" y="15">
+5
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="160" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="170" y="15">
+6
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="180" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="190" y="15">
+7
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="200" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="210" y="15">
+8
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="220" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="230" y="15">
+9
+</text>
+<rect fill="white" fill-opacity="0.5" height="10" stroke="black" stroke-opacity="1" stroke-width="1" width="20" x="240" y="10"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="250" y="15">
+10
+</text>
+<rect fill="white" fill-opacity="0.5" height="24" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="0" y="22"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="15" y="34">
+F301-3
+</text>
+<rect fill="white" fill-opacity="0.5" height="8" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="30" y="22"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="45" y="26">
+F301
+</text>
+<rect fill="white" fill-opacity="0.5" height="8" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="30" y="30"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="45" y="34">
+F302
+</text>
+<rect fill="white" fill-opacity="0.5" height="8" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="30" y="38"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="45" y="42">
+F303
+</text>
+<path d="M60,22 H260 V46 H60 V22 Z  M80,22 V46  M100,22 V46  M120,22 V46  M140,22 V46  M160,22 V46  M180,22 V46  M200,22 V46  M220,22 V46  M240,22 V46  M60,30 H260  M60,38 H260  " fill="green" fill-opacity="0.5" stroke="black" stroke-opacity="1" stroke-width="1"/>
+<rect fill="white" fill-opacity="0.5" height="24" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="0" y="48"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="15" y="60">
+F401-3
+</text>
+<rect fill="white" fill-opacity="0.5" height="8" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="30" y="48"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="45" y="52">
+F401
+</text>
+<rect fill="white" fill-opacity="0.5" height="8" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="30" y="56"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="45" y="60">
+F402
+</text>
+<rect fill="white" fill-opacity="0.5" height="8" stroke="black" stroke-opacity="1" stroke-width="1" width="30" x="30" y="64"/>
+<text dy=".3em" fill="black" font-family="Arial" font-size="7" font-weight="normal" text-anchor="middle" x="45" y="68">
+F403
+</text>
+<path d="M60,48 H260 V72 H60 V48 Z  M80,48 V72  M100,48 V72  M120,48 V72  M140,48 V72  M160,48 V72  M180,48 V72  M200,48 V72  M220,48 V72  M240,48 V72  M60,56 H260  M60,64 H260  " fill="green" fill-opacity="0.5" stroke="black" stroke-opacity="1" stroke-width="1"/>
+</svg>

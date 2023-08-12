@@ -1,4 +1,4 @@
-struct ProjectRectangle{
+struct ProjectRectangle {
     ix: i32,
     iy: i32,
     iw: i32,
@@ -7,13 +7,13 @@ struct ProjectRectangle{
     left_line_mark: bool,
 }
 
-struct ProjectPolygon{
+struct ProjectPolygon {
     i_points: Vec<(i32, i32)>,
     status: Status,
     left_line_mark: bool,
 }
 
-pub enum Status{
+pub enum Status {
     Running,
     Finished,
     Waiting,

@@ -1,6 +1,6 @@
-use svg::node::element::Path as svg_Path;
 use crate::config::PathStyle;
 use crate::shape::Draw;
+use svg::node::element::Path as svg_Path;
 
 pub struct Path<'a> {
     pub id: Option<String>,
@@ -10,12 +10,9 @@ pub struct Path<'a> {
     pub style: &'a PathStyle,
 }
 
-
-
 impl Draw for Path<'_> {
     fn draw(&self) -> Box<dyn svg::Node> {
-        let mut mp = svg_Path::new()
-            .set("d", self.d.clone());
+        let mut mp = svg_Path::new().set("d", self.d.clone());
 
         /////////////////////////////////////////////////////////////
         if let Some(id) = &self.id {

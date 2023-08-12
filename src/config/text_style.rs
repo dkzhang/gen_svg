@@ -6,4 +6,5 @@ pub struct TextStyle {
     pub text_anchor: Option<String>,
     pub fill: Option<String>,
     pub font_weight: Option<String>,
+    pub dy: Option<String>,
 }

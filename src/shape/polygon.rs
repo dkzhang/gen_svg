@@ -1,6 +1,6 @@
-use svg::node::element::Polygon as svg_Polygon;
 use crate::config::PolygonStyle;
 use crate::shape::Draw;
+use svg::node::element::Polygon as svg_Polygon;
 
 pub struct Polygon<'a> {
     pub id: Option<String>,
@@ -10,12 +10,9 @@ pub struct Polygon<'a> {
     pub style: &'a PolygonStyle,
 }
 
-
-
-impl Draw for Polygon<'_>{
-    fn draw(&self) -> Box<dyn svg::Node>{
-        let mut mp = svg_Polygon::new()
-            .set("points", vec_to_string(&self.points));
+impl Draw for Polygon<'_> {
+    fn draw(&self) -> Box<dyn svg::Node> {
+        let mut mp = svg_Polygon::new().set("points", vec_to_string(&self.points));
 
         /////////////////////////////////////////////////////////////
         if let Some(id) = &self.id {

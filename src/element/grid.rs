@@ -1,33 +1,37 @@
+use serde::{Deserialize, Serialize};
 
-pub struct Table{
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Table {
     pub col_headers: ColumnHeader,
     pub row_groups: Vec<RowGroup>,
 }
-
-pub struct RowGroup{
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RowGroup {
     pub header: RowHeader,
     pub grid: Grid,
 }
-
-pub struct Grid{
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Grid {
     pub id: Option<String>,
 
     pub iw: i32,
     pub ih: i32,
 }
-
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RowHeader {
     pub cols: Vec<Vec<RowHeaderCell>>,
 }
-
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RowHeaderCell {
     pub ih: i32,
     pub text: String,
 }
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ColumnHeader {
     pub rows: Vec<Vec<ColumnHeaderCell>>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ColumnHeaderCell {
     pub iw: i32,
     pub text: String,

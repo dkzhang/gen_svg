@@ -1,8 +1,8 @@
 [parameters]
-head_width = 20
-head_height = 8
+head_width = 30
+head_height = 10
 cell_width = 20
-cell_height = 5
+cell_height = 8
 project_spacing_width = 0
 project_spacing_height = 0
 shape_scale_width = 0.0
@@ -51,9 +51,12 @@ fill_opacity = 0.5
 #ry = None,
 #transform = None,
 
-[text_style]
+[table_header_text_style]
 font_family = "Arial"
 font_size = 7
 text_anchor = "middle"
 fill = "black"
 font_weight = "normal"
+dy = ".3em"
+
+[project_text_style]

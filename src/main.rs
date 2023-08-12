@@ -1,21 +1,24 @@
+mod config;
 mod element;
 mod parse;
 mod shape;
-mod config;
 
-use crate::element::{ColumnHeader, ColumnHeaderCell, Grid};
 use crate::config::{Parameters, PolygonStyle};
+use crate::element::{
+    ColumnHeader, ColumnHeaderCell, Grid, RowGroup, RowHeader, RowHeaderCell, Table,
+};
 use crate::shape::Draw;
 use svg::Document;
 use svg::Node;
 
 use simplelog::*;
 use std::fs::File;
+use serde_json;
 
-
-use std::io::Read;
+use crate::config::StyleConfig as MyConfig;
+use crate::parse::table::convert_table;
+use std::io::{Read, Write};
 use std::path::Path;
-use crate::config::Config as MyConfig;
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<MyConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -26,66 +29,147 @@ fn load_config_style<P: AsRef<Path>>(path: P) -> Result<MyConfig, Box<dyn std::e
 }
 
 fn main() {
-
     let log_file = File::create("gen_svg.log").unwrap();
 
-    CombinedLogger::init(
-        vec![
-            TermLogger::new(LevelFilter::Warn, Config::default(), TerminalMode::Mixed, ColorChoice::Auto),
-            WriteLogger::new(LevelFilter::Info, Config::default(), log_file)
-        ]
-    ).unwrap();
-
+    CombinedLogger::init(vec![
+        TermLogger::new(
+            LevelFilter::Info,
+            Config::default(),
+            TerminalMode::Mixed,
+            ColorChoice::Auto,
+        ),
+        WriteLogger::new(LevelFilter::Info, Config::default(), log_file),
+    ])
+    .unwrap();
 
     let config = load_config_style("./config/style.toml").unwrap();
     let para: Parameters = config.parameters;
     let path_style = config.path_style;
+    let polygon_style = config.polygon_style;
     let rect_style = config.rectangle_style;
-    let text_style = config.text_style;
+    let text_style = config.table_header_text_style;
 
-    let pl = PolygonStyle {
-        fill: Some(String::from("red")),
-        stroke: Some(String::from("blue")),
-        stroke_width: Some(1),
-        stroke_opacity: Some(0.5),
-        fill_opacity: Some(0.5),
-        transform: Some(String::from("rotate(45)")),
+    let table = Table {
+        col_headers: ColumnHeader {
+            rows: vec![
+                vec![ColumnHeaderCell {
+                    iw: 10,
+                    text: String::from("Oct"),
+                }],
+                vec![
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("1"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("2"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("3"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("4"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("5"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("6"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("7"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("8"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("9"),
+                    },
+                    ColumnHeaderCell {
+                        iw: 1,
+                        text: String::from("10"),
+                    },
+                ],
+            ],
+        },
+        row_groups: vec![
+            RowGroup {
+                header: RowHeader {
+                    cols: vec![
+                        vec![RowHeaderCell {
+                            ih: 3,
+                            text: String::from("F301-3"),
+                        }],
+                        vec![
+                            RowHeaderCell {
+                                ih: 1,
+                                text: String::from("F301"),
+                            },
+                            RowHeaderCell {
+                                ih: 1,
+                                text: String::from("F302"),
+                            },
+                            RowHeaderCell {
+                                ih: 1,
+                                text: String::from("F303"),
+                            },
+                        ],
+                    ],
+                },
+                grid: Grid {
+                    id: None,
+                    iw: 10,
+                    ih: 3,
+                },
+            },
+            RowGroup {
+                header: RowHeader {
+                    cols: vec![
+                        vec![RowHeaderCell {
+                            ih: 3,
+                            text: String::from("F401-3"),
+                        }],
+                        vec![
+                            RowHeaderCell {
+                                ih: 1,
+                                text: String::from("F401"),
+                            },
+                            RowHeaderCell {
+                                ih: 1,
+                                text: String::from("F402"),
+                            },
+                            RowHeaderCell {
+                                ih: 1,
+                                text: String::from("F403"),
+                            },
+                        ],
+                    ],
+                },
+                grid: Grid {
+                    id: None,
+                    iw: 10,
+                    ih: 3,
+                },
+            },
+        ],
     };
 
-    let ch = ColumnHeader {
-        rows: vec![vec![
-            ColumnHeaderCell {
-                iw: 1,
-                text: String::from("A"),
-            },
-            ColumnHeaderCell {
-                iw: 2,
-                text: String::from("B"),
-            },
-            ColumnHeaderCell {
-                iw: 3,
-                text: String::from("C"),
-            },
-        ]],
-    };
+    let (x, y) = (0, 0);
+    let mut vd = convert_table(&table, x, y, &para, &path_style, &rect_style, &text_style);
 
+    let table_json = serde_json::to_string_pretty(&table).expect("Failed to serialize data");
 
-
-    let g = Grid {
-        id: None,
-        iw: 10,
-        ih: 5,
-    };
-
-
-    // let mut x = 10;
-    // let mut y = 10;
-    // let vd2 = parse::convert_column_header(ch, x, y, &para, &rect_style, &text_style);
-    // // x = 10;
-    // y += para.head_height + para.group_spacing_height;
-    // let vd1 = parse::convert_grid(g, x, y, &para, &path_style);
-
-
+    // Write the JSON string to a file.
+    let mut file = File::create("table.json").expect("Failed to create file");
+    file.write_all(table_json.as_bytes()).expect("Failed to write data");
 
     let mut document = Document::new()
         .set("width", "400")
@@ -93,18 +177,25 @@ fn main() {
         .set("viewBox", (0, 0, 400, 300))
         .set("preserveAspectRatio", "xMidYMid meet");
 
-    // for d in vd1 {
-    //     document = document.add(d.draw());
-    // }
-    //
-    // for d in vd2 {
-    //     document = document.add(d.draw());
-    // }
+    for d in vd {
+        document = document.add(d.draw());
+    }
 
     svg::save("image.svg", &document).unwrap();
 
-
-    log::info!("This is an information message from file {} at line {} .", file!(), line!());
-    log::warn!("This is a warning message from file {} at line {} .", file!(), line!());
-    log::error!("This is an error message from file {} at line {} .", file!(), line!());
+    log::info!(
+        "This is an information message from file {} at line {} .",
+        file!(),
+        line!()
+    );
+    log::warn!(
+        "This is a warning message from file {} at line {} .",
+        file!(),
+        line!()
+    );
+    log::error!(
+        "This is an error message from file {} at line {} .",
+        file!(),
+        line!()
+    );
 }
