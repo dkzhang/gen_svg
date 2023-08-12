@@ -8,17 +8,20 @@ use crate::element::{
     ColumnHeader, ColumnHeaderCell, Grid, RowGroup, RowHeader, RowHeaderCell, Table,
 };
 use crate::shape::Draw;
+use std::fs;
 use svg::Document;
 use svg::Node;
 
+use serde_json;
 use simplelog::*;
 use std::fs::File;
-use serde_json;
 
 use crate::config::StyleConfig as MyConfig;
 use crate::parse::table::convert_table;
 use std::io::{Read, Write};
 use std::path::Path;
+use svg::node::element::tag::Definitions;
+use svg::node::element::{Definitions, Link, Style};
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<MyConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -42,12 +45,7 @@ fn main() {
     ])
     .unwrap();
 
-    let config = load_config_style("./config/style.toml").unwrap();
-    let para: Parameters = config.parameters;
-    let path_style = config.path_style;
-    let polygon_style = config.polygon_style;
-    let rect_style = config.rectangle_style;
-    let text_style = config.table_header_text_style;
+    let style_config = load_config_style("./config/style.toml").unwrap();
 
     let table = Table {
         col_headers: ColumnHeader {
@@ -163,19 +161,29 @@ fn main() {
     };
 
     let (x, y) = (0, 0);
-    let mut vd = convert_table(&table, x, y, &para, &path_style, &rect_style, &text_style);
+    let mut vd = convert_table(&table, x, y, &style_config);
 
     let table_json = serde_json::to_string_pretty(&table).expect("Failed to serialize data");
 
     // Write the JSON string to a file.
     let mut file = File::create("table.json").expect("Failed to create file");
-    file.write_all(table_json.as_bytes()).expect("Failed to write data");
+    file.write_all(table_json.as_bytes())
+        .expect("Failed to write data");
+
+    // read css file
+    let css_content =
+        fs::read_to_string("./style.css").expect("Something went wrong reading the css file");
+
+    let css_style_def = Definitions::new().add(Style::new(css_content));
 
     let mut document = Document::new()
         .set("width", "400")
         .set("height", "300")
         .set("viewBox", (0, 0, 400, 300))
-        .set("preserveAspectRatio", "xMidYMid meet");
+        .set("preserveAspectRatio", "xMidYMid meet")
+        .set("xmlns", "http://www.w3.org/2000/svg")
+        .set("xmlns:xlink", "http://www.w3.org/1999/xlink")
+        .add(css_style_def);
 
     for d in vd {
         document = document.add(d.draw());

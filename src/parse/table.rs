@@ -1,4 +1,4 @@
-use crate::config::{Parameters, PathStyle, RectangleStyle, TextStyle};
+use crate::config::{Parameters, PathStyle, RectangleStyle, StyleConfig, TextStyle};
 use crate::element::Table;
 use crate::parse::grid::*;
 use crate::shape::Draw;
@@ -7,17 +7,19 @@ pub fn convert_table<'a>(
     t: &'a Table,
     x: i32,
     y: i32,
-    para: &'a Parameters,
-    path_style: &'a PathStyle,
-    rect_style: &'a RectangleStyle,
-    text_style: &'a TextStyle,
+    style: &'a StyleConfig,
 ) -> Vec<Box<dyn Draw + 'a>> {
+    let para = &style.parameters;
+    let path_style = &style.path_style;
+    let rect_style = &style.rectangle_style;
+    let text_style = &style.table_header_text_style;
+
     let (mut cx, mut cy) = (x, y);
     let mut vd: Vec<Box<dyn Draw>> = Vec::new();
 
     // firstly compute row header position
     let (row_header_xx, row_header_yy) =
-        compute_row_header_pos(&t.row_groups, x, y, &para, &rect_style, &text_style);
+        compute_row_header_pos(&t.row_groups, x, y, &style);
 
     log::info!(
         "row_header_xx: {}, row_header_yy: {}",
@@ -30,9 +32,7 @@ pub fn convert_table<'a>(
         &t.col_headers,
         row_header_xx,
         y,
-        &para,
-        &rect_style,
-        &text_style,
+        &style,
     );
     vd.append(&mut col_header_vd);
 
@@ -42,10 +42,10 @@ pub fn convert_table<'a>(
     // convert each row group
     for rg in t.row_groups.iter() {
         let (mut row_header_vd, row_header_xx, row_header_yy) =
-            convert_row_header(&rg.header, cx, cy, &para, &rect_style, &text_style);
+            convert_row_header(&rg.header, cx, cy, &style);
         vd.append(&mut row_header_vd);
 
-        let (mut row_grid_vd, _, _) = convert_grid(&rg.grid, row_header_xx, cy, &para, &path_style);
+        let (mut row_grid_vd, _, _) = convert_grid(&rg.grid, row_header_xx, cy, &style);
         vd.append(&mut row_grid_vd);
 
         cy = row_header_yy;

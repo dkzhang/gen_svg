@@ -1,4 +1,4 @@
-03:11:36 [INFO] row_header_xx: 60, row_header_yy: 50
-03:11:36 [INFO] This is an information message from file src\main.rs at line 189 .
-03:11:36 [WARN] This is a warning message from file src\main.rs at line 194 .
-03:11:36 [ERROR] This is an error message from file src\main.rs at line 199 .
+04:06:27 [INFO] row_header_xx: 60, row_header_yy: 50
+04:06:27 [INFO] This is an information message from file src\main.rs at line 197 .
+04:06:27 [WARN] This is a warning message from file src\main.rs at line 202 .
+04:06:27 [ERROR] This is an error message from file src\main.rs at line 207 .

@@ -1,0 +1,10 @@
+
+path{
+    fill: green;
+}
+
+.myRect{
+    fill: yellow;
+    stroke: red;
+    stroke-width: 1px;
+}

@@ -22,7 +22,7 @@ fill_opacity = 0.5
 #transform = None
 
 [path_style]
-fill = "green"
+#fill = "green"
 stroke = "black"
 stroke_width = 1
 stroke_opacity = 1.0

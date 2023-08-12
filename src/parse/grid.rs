@@ -1,4 +1,4 @@
-use crate::config::PathStyle;
+use crate::config::{PathStyle, StyleConfig};
 use crate::config::{Parameters, RectangleStyle, TextStyle};
 use crate::element::{ColumnHeader, Grid, RowGroup, RowHeader, Table};
 use crate::shape::{Draw, Path, Rectangle, Text};
@@ -8,9 +8,11 @@ pub fn convert_grid<'a>(
     g: &'a Grid,
     x: i32,
     y: i32,
-    para: &'a Parameters,
-    path_style: &'a PathStyle,
+    style: &'a StyleConfig,
 ) -> (Vec<Box<dyn Draw + 'a>>, i32, i32) {
+    let para = &style.parameters;
+    let path_style = &style.path_style;
+
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
         id: g.id.clone(),
@@ -57,10 +59,12 @@ pub fn convert_column_header<'a>(
     column_header: &'a ColumnHeader,
     x: i32,
     y: i32,
-    para: &'a Parameters,
-    rect_style: &'a RectangleStyle,
-    text_style: &'a TextStyle,
+    style: &'a StyleConfig,
 ) -> (Vec<Box<dyn Draw + 'a>>, i32, i32) {
+    let para = &style.parameters;
+    let rect_style = &style.rectangle_style;
+    let text_style = &style.table_header_text_style;
+
     let height = para.head_height;
     let width = para.cell_width;
 
@@ -109,10 +113,12 @@ pub fn convert_row_header<'a>(
     row_header: &'a RowHeader,
     x: i32,
     y: i32,
-    para: &'a Parameters,
-    rect_style: &'a RectangleStyle,
-    text_style: &'a TextStyle,
+    style: &'a StyleConfig,
 ) -> (Vec<Box<dyn Draw + 'a>>, i32, i32) {
+    let para = &style.parameters;
+    let rect_style = &style.rectangle_style;
+    let text_style = &style.table_header_text_style;
+
     let height = para.cell_height;
     let width = para.head_width;
 
@@ -161,10 +167,10 @@ pub fn compute_row_header_pos<'a>(
     row_groups: &'a Vec<RowGroup>,
     x: i32,
     y: i32,
-    para: &'a Parameters,
-    rect_style: &'a RectangleStyle,
-    text_style: &'a TextStyle,
+    style: &'a StyleConfig,
 ) -> (i32, i32) {
+    let para = &style.parameters;
+
     let height = para.cell_height;
     let width = para.head_width;
 
