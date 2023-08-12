@@ -4,6 +4,7 @@ use svg::node::element::Line as svg_Line;
 
 pub struct Line<'a> {
     pub id: Option<String>,
+    pub class: Option<String>,
 
     pub x1: i32,
     pub y1: i32,
