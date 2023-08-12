@@ -1,20 +1,18 @@
-use crate::config::LineStyle;
-use crate::shape::Draw;
+use crate::shape::{Draw};
 use svg::node::element::Line as svg_Line;
 
-pub struct Line<'a> {
+pub struct Line{
     pub id: Option<String>,
-    pub class: Option<String>,
+    pub class: Vec<String>,
 
     pub x1: i32,
     pub y1: i32,
     pub x2: i32,
     pub y2: i32,
 
-    pub style: &'a LineStyle,
 }
 
-impl Draw for Line<'_> {
+impl Draw for Line {
     fn draw(&self) -> Box<dyn svg::Node> {
         let mut ml = svg_Line::new()
             .set("x1", self.x1)
@@ -27,34 +25,10 @@ impl Draw for Line<'_> {
             ml = ml.set("id", id.clone());
         };
 
+        if self.class.is_empty() == false {
+            ml = ml.set("class", self.class.join(" "));
+        };
         /////////////////////////////////////////////////////////////
-        if let Some(stroke) = &self.style.stroke {
-            ml = ml.set("stroke", stroke.clone());
-        };
-
-        if let Some(stroke_width) = self.style.stroke_width {
-            ml = ml.set("stroke-width", stroke_width);
-        };
-
-        if let Some(stroke_opacity) = self.style.stroke_opacity {
-            ml = ml.set("stroke-opacity", stroke_opacity);
-        };
-
-        if let Some(stroke_linecap) = &self.style.stroke_linecap {
-            ml = ml.set("stroke-linecap", stroke_linecap.clone());
-        };
-
-        if let Some(stroke_dasharray) = &self.style.stroke_dasharray {
-            ml = ml.set("stroke-dasharray", stroke_dasharray.clone());
-        };
-
-        if let Some(stroke_dashoffset) = self.style.stroke_dashoffset {
-            ml = ml.set("stroke-dashoffset", stroke_dashoffset);
-        };
-
-        if let Some(transform) = &self.style.transform {
-            ml = ml.set("transform", transform.clone());
-        };
 
         return Box::new(ml);
     }

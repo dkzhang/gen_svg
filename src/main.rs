@@ -3,7 +3,7 @@ mod element;
 mod parse;
 mod shape;
 
-use crate::config::{Parameters, PolygonStyle};
+
 use crate::element::{
     ColumnHeader, ColumnHeaderCell, Grid, RowGroup, RowHeader, RowHeaderCell, Table,
 };
@@ -16,7 +16,7 @@ use serde_json;
 use simplelog::*;
 use std::fs::File;
 
-use crate::config::StyleConfig as MyConfig;
+use crate::config::AppConfig as MyConfig;
 use crate::parse::table::convert_table;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;

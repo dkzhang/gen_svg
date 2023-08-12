@@ -1,0 +1,114 @@
+use serde::{Deserialize, Serialize};
+#[derive(Serialize, Deserialize, Debug)]
+pub struct LineStyle {
+    pub stroke: Option<String>,
+    pub stroke_width: Option<i32>,
+    pub stroke_opacity: Option<f32>,
+    pub stroke_linecap: Option<String>,
+    pub stroke_dasharray: Option<String>,
+    pub stroke_dashoffset: Option<i32>,
+
+    pub transform: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PathStyle {
+    pub fill: Option<String>,
+    pub fill_opacity: Option<f32>,
+    pub stroke: Option<String>,
+    pub stroke_width: Option<i32>,
+    pub stroke_linecap: Option<String>,
+    pub stroke_linejoin: Option<String>,
+    pub stroke_dasharray: Option<String>,
+    pub stroke_dashoffset: Option<i32>,
+    pub stroke_opacity: Option<f32>,
+
+    pub transform: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct PolygonStyle {
+    pub fill: Option<String>,
+    pub stroke: Option<String>,
+    pub stroke_width: Option<i32>,
+    pub stroke_opacity: Option<f32>,
+    pub fill_opacity: Option<f32>,
+
+    pub transform: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RectangleStyle {
+    pub fill: Option<String>,
+    pub stroke: Option<String>,
+    pub stroke_width: Option<i32>,
+    pub stroke_opacity: Option<f32>,
+    pub fill_opacity: Option<f32>,
+    pub rx: Option<i32>,
+    pub ry: Option<i32>,
+
+    pub transform: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TextStyle {
+    pub font_family: Option<String>,
+    pub font_size: Option<i32>,
+    pub text_anchor: Option<String>,
+    pub fill: Option<String>,
+    pub font_weight: Option<String>,
+    pub dy: Option<String>,
+}
+
+// toml
+[line_style]
+fill = "green"
+stroke = "black"
+stroke_width = 1
+stroke_opacity = 1.0
+fill_opacity = 0.5
+#stroke_linecap = None
+#stroke_linejoin = None
+#stroke_dasharray = None
+#stroke_dashoffset = None
+#transform = None
+
+[path_style]
+#fill = "green"
+stroke = "black"
+stroke_width = 1
+stroke_opacity = 1.0
+fill_opacity = 0.5
+#stroke_linecap = None
+#stroke_linejoin = None
+#stroke_dasharray = None
+#stroke_dashoffset = None
+#transform = None
+
+[polygon_style]
+fill = "green"
+stroke = "blue"
+stroke_width = 1
+stroke_opacity = 1.0
+fill_opacity = 0.5
+#transform = None
+
+[rectangle_style]
+fill = "white"
+stroke = "black"
+stroke_width = 1
+stroke_opacity = 1.0
+fill_opacity = 0.5
+#rx = None,
+#ry = None,
+#transform = None,
+
+[table_header_text_style]
+font_family = "Arial"
+font_size = 7
+text_anchor = "middle"
+fill = "black"
+font_weight = "normal"
+dy = ".3em"
+
+[project_text_style]
