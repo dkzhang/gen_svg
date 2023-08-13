@@ -11,3 +11,12 @@ pub mod grid;
 pub mod table;
 
 pub use grid::*;
+
+
+
+
+#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
+pub struct PointScreen {
+    pub x: i32,
+    pub y: i32,
+}

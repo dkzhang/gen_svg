@@ -1,6 +1,7 @@
+use crate::element::PointLogical;
+
 struct ProjectRectangle {
-    ix: i32,
-    iy: i32,
+    top_left: PointLogical,
     iw: i32,
     ih: i32,
     status: Status,
@@ -8,7 +9,7 @@ struct ProjectRectangle {
 }
 
 struct ProjectPolygon {
-    i_points: Vec<(i32, i32)>,
+    i_points: Vec<PointLogical>,
     status: Status,
     left_line_mark: bool,
 }

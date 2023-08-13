@@ -23,6 +23,7 @@ use std::path::Path;
 use serde_json::from_reader;
 use svg::node::element::tag::Definitions;
 use svg::node::element::{Definitions, Link, Style};
+use crate::parse::PointScreen;
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<MyConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -188,8 +189,8 @@ fn main() {
         .add(css_style_def);
 
     // write shape in svg
-    let (x, y) = (0, 0);
-    let mut vd = convert_table(&table, x, y, &style_config);
+    let top_left = PointScreen { x: 0, y: 0 };
+    let mut vd = convert_table(&table, top_left, &style_config);
 
     for d in vd {
         document = document.add(d.draw());

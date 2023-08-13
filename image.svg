@@ -35,7 +35,6 @@ text{
     transform: translateY(0.3em);
 }
 
-
 </style>
 </defs>
 <rect height="10" width="200" x="60" y="0"/>

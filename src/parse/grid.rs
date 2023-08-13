@@ -2,15 +2,15 @@ use crate::config::{AppConfig};
 use crate::element::{ColumnHeader, Grid, RowGroup, RowHeader, Table};
 use crate::shape::{Draw, Path, Rectangle, Text};
 use svg::node::element::tag::Rectangle;
+use crate::parse::PointScreen;
 
 pub fn convert_grid<'a>(
     g: &'a Grid,
-    x: i32,
-    y: i32,
+    top_left: PointScreen,
     ac: &'a AppConfig,
-) -> (Vec<Box<dyn Draw + 'a>>, i32, i32) {
+) -> (Vec<Box<dyn Draw + 'a>>, PointScreen) {
     let para = &ac.parameters;
-
+    let (x,y) = (top_left.x, top_left.y);
 
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
@@ -51,27 +51,31 @@ pub fn convert_grid<'a>(
 
     path.d = d;
     result.push(path);
-    return (result, x + width, y + height);
+
+    let bottom_right = PointScreen {
+        x: x + width,
+        y: y + height,
+    };
+    return (result, bottom_right);
 }
 
 pub fn convert_column_header<'a>(
     column_header: &'a ColumnHeader,
-    x: i32,
-    y: i32,
+    top_left: PointScreen,
     ac: &'a AppConfig,
-) -> (Vec<Box<dyn Draw + 'a>>, i32, i32) {
+) -> (Vec<Box<dyn Draw + 'a>>, PointScreen) {
     let para = &ac.parameters;
 
     let height = para.head_height;
     let width = para.cell_width;
 
-    let mut xx = x;
-    let mut yy = y;
+    let mut xx = top_left.x;
+    let mut yy = top_left.y;
 
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
-    let mut hy = y;
+    let mut hy = top_left.y;
     for cr in column_header.rows.iter() {
-        let mut hx = x;
+        let mut hx = top_left.x;
         for c in cr.iter() {
             let rect = Box::new(Rectangle {
                 id: None,
@@ -103,27 +107,30 @@ pub fn convert_column_header<'a>(
             yy = hy;
         }
     }
-    return (result, xx, yy);
+    let bottom_right = PointScreen {
+        x: xx,
+        y: yy,
+    };
+    return (result, bottom_right);
 }
 
 pub fn convert_row_header<'a>(
     row_header: &'a RowHeader,
-    x: i32,
-    y: i32,
+    top_left: PointScreen,
     style: &'a AppConfig,
-) -> (Vec<Box<dyn Draw + 'a>>, i32, i32) {
+) -> (Vec<Box<dyn Draw + 'a>>, PointScreen) {
     let para = &style.parameters;
 
     let height = para.cell_height;
     let width = para.head_width;
 
-    let mut xx = x;
-    let mut yy = y;
+    let mut xx = top_left.x;
+    let mut yy = top_left.y;
 
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
-    let mut hx = x;
+    let mut hx = top_left.x;
     for cc in row_header.cols.iter() {
-        let mut hy = y;
+        let mut hy = top_left.y;
         for r in cc {
             let rect = Box::new(Rectangle {
                 id: None,
@@ -155,27 +162,31 @@ pub fn convert_row_header<'a>(
             xx = hx;
         }
     }
-    return (result, xx, yy);
+
+    let bottom_right = PointScreen {
+        x: xx,
+        y: yy,
+    };
+    return (result, bottom_right);
 }
 
 pub fn compute_row_header_pos<'a>(
     row_groups: &'a Vec<RowGroup>,
-    x: i32,
-    y: i32,
+    top_left: PointScreen,
     style: &'a AppConfig,
-) -> (i32, i32) {
+) -> PointScreen {
     let para = &style.parameters;
 
     let height = para.cell_height;
     let width = para.head_width;
 
-    let mut xx = x;
-    let mut yy = y;
+    let mut xx = top_left.x;
+    let mut yy = top_left.y;
 
-    let mut gy = y;
+    let mut gy = top_left.y;
 
     for rg in row_groups.iter() {
-        let mut hx = x;
+        let mut hx = top_left.x;
         for cc in rg.header.cols.iter() {
             let mut hy = gy;
             for r in cc {
@@ -195,5 +206,9 @@ pub fn compute_row_header_pos<'a>(
         gy += para.group_spacing_height;
     }
 
-    return (xx, yy);
+    let bottom_right = PointScreen {
+        x: xx,
+        y: yy,
+    };
+    return bottom_right;
 }
