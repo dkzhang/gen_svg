@@ -178,9 +178,9 @@ fn main() {
     let css_style_def = Definitions::new().add(Style::new(css_content));
 
     let mut document = Document::new()
-        .set("width", "400")
-        .set("height", "300")
-        .set("viewBox", (0, 0, 400, 300))
+        .set("width", "3840")
+        .set("height", "2160")
+        .set("viewBox", (0, 0, 3840, 2160))
         .set("preserveAspectRatio", "xMidYMid meet")
         .set("xmlns", "http://www.w3.org/2000/svg")
         .set("xmlns:xlink", "http://www.w3.org/1999/xlink")
@@ -206,6 +206,18 @@ fn main() {
     };
     let mut project1_vd = convert_project(&project1, &points_map,&app_config);
     for d in project1_vd {
+        document = document.add(d.draw());
+    }
+
+    let project2 = Project{
+        id: String::from("002"),
+        name: String::from("Project2"),
+        rects: vec![
+            ProjectRect::new2(Coordinate{x:3,y:1}, &Coordinate { x: 6, y: 2 }),
+        ],
+    };
+    let mut project2_vd = convert_project(&project2, &points_map,&app_config);
+    for d in project2_vd {
         document = document.add(d.draw());
     }
 
