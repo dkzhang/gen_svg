@@ -1,16 +1,19 @@
 use log::log;
 use std::collections::HashMap;
 use std::fmt;
+use svg::node::element::tag::Rectangle;
 
 fn main() {
     let rects = vec![
-        Rectangle::new(Coordinate { x: 0, y: 2 }),
-        Rectangle::new(Coordinate { x: 1, y: 2 }),
-        Rectangle::new(Coordinate { x: 2, y: 0 }),
-        Rectangle::new(Coordinate { x: 2, y: 1 }),
-        Rectangle::new(Coordinate { x: 2, y: 2 }),
-        Rectangle::new(Coordinate { x: 0, y: 0 }),
-        Rectangle::new(Coordinate { x: 0, y: 1 }),
+        // Rectangle::new(Coordinate { x: 0, y: 2 }),
+        // Rectangle::new(Coordinate { x: 1, y: 2 }),
+        // Rectangle::new(Coordinate { x: 2, y: 0 }),
+        // Rectangle::new(Coordinate { x: 2, y: 1 }),
+        // Rectangle::new(Coordinate { x: 2, y: 2 }),
+        // Rectangle::new(Coordinate { x: 0, y: 0 }),
+        // Rectangle::new(Coordinate { x: 0, y: 1 }),
+        Rectangle::new2(&Coordinate { x: 0, y: 0 }, &Coordinate { x: 0, y: 2 }),
+        Rectangle::new2(&Coordinate { x: 1, y: 1 }, &Coordinate { x: 2, y: 1 }),
     ];
 
     let polygons = rects
@@ -46,7 +49,6 @@ fn main() {
             println!("{}: {:?}", k, v);
         }
     }
-
 }
 
 fn convert_rect_to_polygon(rect: &Rectangle) -> Polygon {
@@ -116,6 +118,61 @@ fn eliminate_merge_edges(polygon1: &Polygon, polygon2: &Polygon) -> Option<Polyg
     return None;
 }
 
+fn eliminate_merge_edges2(polygon1: &Polygon, polygon2: &Polygon) -> Option<Polygon> {
+    let mut result: Vec<PointLogical> = Vec::new();
+
+    let points1 = &polygon1.points;
+    let points2 = &polygon2.points;
+
+    // check if there is at least 3 points
+    if points1.len() < 3 || points2.len() < 3 {
+        return None;
+    }
+
+    let (n1, n2) = (points1.len(), points2.len());
+
+    for i in 0..n1 {
+        for j in 0..n2 {
+            if detect_congruence_overlap_inverse(
+                &points1[i],
+                &points1[(i + 1) % n1],
+                &points2[j],
+                &points2[(j + 1) % n2],
+            ) {
+                println!("found a merge edge");
+                // found a merge edge
+                // eliminate this edge
+                for k in 0..=i {
+                    result.push(points1[k].clone());
+                }
+
+                if points1[i] != points2[(j + 1) % n2] {
+                    result.push(points2[(j + 1) % n2].clone());
+                }
+
+                for k in j + 2..points2.len() {
+                    result.push(points2[k].clone());
+                }
+
+                for k in 0..j {
+                    result.push(points2[k].clone());
+                }
+
+                if points1[(i + 1) % n1] != points2[j] {
+                    result.push(points2[j].clone());
+                }
+
+                for k in i + 1..points1.len() {
+                    result.push(points1[k].clone());
+                }
+
+                return Some(Polygon { points: result });
+            };
+        }
+    }
+    return None;
+}
+
 fn extend_merge_edges(p: &Polygon) -> Polygon {
     if p.points.len() < 3 {
         return p.clone();
@@ -160,7 +217,7 @@ fn merge(polygons: &Vec<Polygon>) -> Vec<Polygon> {
         while to_merge {
             to_merge = false;
             for j in 0..result.len() - 1 {
-                let merged = eliminate_merge_edges(&result[j], &result[result.len() - 1]);
+                let merged = eliminate_merge_edges2(&result[j], &result[result.len() - 1]);
                 if let Some(p) = merged {
                     result.remove(j);
                     result.remove(result.len() - 1);
@@ -187,14 +244,14 @@ fn turn_analysis(p: &Polygon) -> HashMap<PointLogical, (Direction, Direction)> {
 
         result.insert(
             cur.clone(),
-            (ComputeDirection(prev, cur), ComputeDirection(cur, next)),
+            (compute_direction(prev, cur), compute_direction(cur, next)),
         );
     }
 
     return result;
 }
 
-fn ComputeDirection(p1: &PointLogical, p2: &PointLogical) -> Direction {
+fn compute_direction(p1: &PointLogical, p2: &PointLogical) -> Direction {
     if p1.x < p2.x {
         return Direction::Right;
     } else if p1.x > p2.x {
@@ -208,6 +265,64 @@ fn ComputeDirection(p1: &PointLogical, p2: &PointLogical) -> Direction {
             panic!("p1 == p2");
         }
     }
+}
+
+fn is_in_range(x1: i32, x2: i32, x: i32) -> bool {
+    return if x1 < x2 {
+        x1 <= x && x <= x2
+    } else {
+        x2 <= x && x <= x1
+    };
+}
+
+fn detect_inverse(
+    p1: &PointLogical,
+    p2: &PointLogical,
+    p3: &PointLogical,
+    p4: &PointLogical,
+) -> bool {
+    if (p2.x - p1.x) * (p4.y - p3.y) + (p2.y - p1.y) * (p3.x - p4.x) != 0 {
+        return false;
+    };
+
+    if p1.y == p2.y && (p1.x - p2.x) * (p3.x - p4.x) < 0 {
+        return true;
+    };
+
+    if p1.x == p2.x && (p1.y - p2.y) * (p3.y - p4.y) < 0 {
+        return true;
+    };
+
+    return false;
+}
+fn detect_congruence_overlap_inverse(
+    p1: &PointLogical,
+    p2: &PointLogical,
+    p3: &PointLogical,
+    p4: &PointLogical,
+) -> bool {
+    // detect inverse
+    if detect_inverse(p1, p2, p3, p4) == false {
+        return false;
+    };
+
+    // detect congruence
+    if is_congruence(p1, p2, p3) == false {
+        return false;
+    };
+
+    // detect overlap
+    return if p1.x == p2.x {
+        is_in_range(p1.y, p2.y, p3.y)
+            || is_in_range(p1.y, p2.y, p4.y)
+            || is_in_range(p3.y, p4.y, p1.y)
+            || is_in_range(p3.y, p4.y, p2.y)
+    } else {
+        is_in_range(p1.x, p2.x, p3.x)
+            || is_in_range(p1.x, p2.x, p4.x)
+            || is_in_range(p3.x, p4.x, p1.x)
+            || is_in_range(p3.x, p4.x, p2.x)
+    };
 }
 
 #[derive(Debug, Clone, Hash)]
@@ -247,7 +362,7 @@ pub enum Direction {
 }
 
 impl Rectangle {
-    pub fn new(c: Coordinate) -> Rectangle {
+    pub fn new(c: &Coordinate) -> Rectangle {
         Rectangle {
             top_left: PointLogical { x: c.x, y: c.y },
             bottom_right: PointLogical {
@@ -256,7 +371,7 @@ impl Rectangle {
             },
         }
     }
-    pub fn new2(c_tl: Coordinate, c_br: Coordinate) -> Rectangle {
+    pub fn new2(c_tl: &Coordinate, c_br: &Coordinate) -> Rectangle {
         Rectangle {
             top_left: PointLogical {
                 x: c_tl.x,
