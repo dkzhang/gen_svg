@@ -341,6 +341,38 @@ fn detect_congruence_overlap_inverse(
     };
 }
 
+fn coordinate_conversion_aux(d2: &(Direction, Direction)) -> (i32, i32, i32) {
+    // 0,1,2,3 -> top_left, bottom_left, bottom_right, top_right
+    let (mut dx, mut dy, mut i) = match d2 {
+        (Direction::Up, Direction::Left) => (-1, 0, 3),
+        (Direction::Up, Direction::Right) => (0, 0, 0),
+        (Direction::Down, Direction::Left) => (-1, -1, 2),
+        (Direction::Down, Direction::Right) => (0, -1, 1),
+        (Direction::Left, Direction::Up) => (0, -1, 1),
+        (Direction::Left, Direction::Down) => (0, 0, 0),
+        (Direction::Right, Direction::Up) => (-1, -1, 2),
+        (Direction::Right, Direction::Down) => (-1, 0, 3),
+        _ => {
+            panic!("impossible")
+        }
+    };
+    return (dx, dy, i);
+}
+
+fn coordinate_conversion(
+    point: &PointLogical,
+    d2: &(Direction, Direction),
+    c2p: &HashMap<Coordinate, Vec<PointScreen>>,
+) -> PointLogical {
+    let (dx, dy, i) = coordinate_conversion_aux(d2);
+    let c = Coordinate {
+        x: point.x + dx,
+        y: point.y + dy,
+    };
+
+    return c2p.get(&c).expect("point does doesn't in HashMap")[i].clone();
+}
+
 #[derive(Debug, Clone, Hash)]
 pub struct Rectangle {
     pub top_left: PointLogical,
