@@ -31,3 +31,10 @@ text{
     font-weight : normal;
     transform: translateY(0.3em);
 }
+
+.project{
+    fill: aquamarine;
+    fill-opacity : 0.9;
+    rx:2px;
+    ry:2px;
+}

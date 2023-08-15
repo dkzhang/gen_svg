@@ -1,60 +1,108 @@
+use crate::config::AppConfig;
+use crate::element::{Coordinate, PointLogical, Project, ProjectRect};
+use crate::parse::PointScreen;
+use crate::shape::{Draw, Polygon, Rectangle, Text};
 use log::log;
 use std::collections::HashMap;
 use std::fmt;
-use svg::node::element::tag::Rectangle;
 
-fn main() {
-    let rects = vec![
-        // Rectangle::new(Coordinate { x: 0, y: 2 }),
-        // Rectangle::new(Coordinate { x: 1, y: 2 }),
-        // Rectangle::new(Coordinate { x: 2, y: 0 }),
-        // Rectangle::new(Coordinate { x: 2, y: 1 }),
-        // Rectangle::new(Coordinate { x: 2, y: 2 }),
-        // Rectangle::new(Coordinate { x: 0, y: 0 }),
-        // Rectangle::new(Coordinate { x: 0, y: 1 }),
-        Rectangle::new2(&Coordinate { x: 0, y: 0 }, &Coordinate { x: 0, y: 2 }),
-        Rectangle::new2(&Coordinate { x: 1, y: 2 }, &Coordinate { x: 2, y: 2 }),
-        Rectangle::new2(&Coordinate { x: 2, y: 0 }, &Coordinate { x: 2, y: 1 }),
-        Rectangle::new(&Coordinate { x: 1, y: 0 }),
-        Rectangle::new(&Coordinate { x: 1, y: 1 }),
-    ];
-
-    let polygons = rects
+pub fn convert_project(
+    project: &Project,
+    points_map: &HashMap<Coordinate, Vec<PointScreen>>,
+    ac: &AppConfig,
+) -> Vec<Box<dyn Draw>> {
+    let polygons = project
+        .rects
         .iter()
         .map(|r| convert_rect_to_polygon(&r))
-        .collect::<Vec<Polygon>>();
-
-    for p in polygons.iter() {
-        println!("{}", p);
-    }
-
-    println!("----------------------eliminate_merge_edges----------------------");
+        .collect::<Vec<ProjectPolygon>>();
 
     let merged = merge(&polygons);
 
-    for p in merged.iter() {
-        println!("{}", p);
-    }
-
-    println!("----------------------extend_merge_edges----------------------");
     let extended_polygons = merged
         .iter()
         .map(|p| extend_merge_edges(&p))
-        .collect::<Vec<Polygon>>();
+        .collect::<Vec<ProjectPolygon>>();
+
+
     for p in extended_polygons.iter() {
-        println!("{}", p);
+        println!("extended_polygons: {}", p)
     }
 
-    println!("----------------------turn_analysis----------------------");
-    for p in extended_polygons.iter() {
-        let turn_map = turn_analysis(p);
-        for (k, v) in turn_map.iter() {
-            println!("{}: {:?}", k, v);
-        }
+    // covert each polygon to shape Rectangle or Polygon
+    let mut result: Vec<Box<dyn Draw>> = Vec::new();
+
+    for (i, p) in extended_polygons.iter().enumerate() {
+        result.append(&mut convert_to_vd(
+            &p,
+            &points_map,
+            &format!("project_{}_{}",project.id, i),
+            &project.name,
+            ac,
+        ));
     }
+
+    return result;
 }
 
-fn convert_rect_to_polygon(rect: &Rectangle) -> Polygon {
+fn convert_to_vd(
+    p: &ProjectPolygon,
+    pm: &HashMap<Coordinate, Vec<PointScreen>>,
+    id: &String,
+    name: &String,
+    ac: &AppConfig,
+) -> Vec<Box<dyn Draw>> {
+    let mut result: Vec<Box<dyn Draw>> = Vec::new();
+    let turn_map = turn_analysis(p);
+    let spacing = PointScreen {
+        x: ac.parameters.project_spacing_width,
+        y: ac.parameters.project_spacing_height,
+    };
+
+    if is_rectangle(p) {
+        let top_left = coordinate_conversion(&p.points[0], &turn_map[&p.points[0]], &spacing,pm);
+        let bottom_right = coordinate_conversion(&p.points[2], &turn_map[&p.points[2]], &spacing,pm);
+        let (width, height) = (
+            bottom_right.x - top_left.x,
+            bottom_right.y - top_left.y,
+        );
+
+        let rect = Box::new(Rectangle {
+            id: None,
+            class: vec![ProjectClass::Project.to_string()],
+            x: top_left.x,
+            y:top_left.y,
+            width,
+            height,
+        });
+        result.push(rect);
+
+        let text = Box::new(Text {
+            id: Some(id.clone()),
+            class: vec![],
+            x: top_left.x + width / 2,
+            y: top_left.y + height / 2,
+            content: name.clone(),
+        });
+        result.push(text);
+    } else {
+        let polygon = Box::new(Polygon {
+            id: None,
+            class: vec![ProjectClass::Project.to_string()],
+            points: p.points.iter().map(|p| coordinate_conversion(p, &turn_map[p], &spacing,pm)).collect(),
+        });
+
+        println!("polygon: {:?}", polygon.points);
+
+        result.push(polygon);
+
+        // TODO: add text
+    }
+
+    return result;
+}
+
+fn convert_rect_to_polygon(rect: &ProjectRect) -> ProjectPolygon {
     let points = vec![
         PointLogical {
             x: rect.top_left.x,
@@ -74,10 +122,13 @@ fn convert_rect_to_polygon(rect: &Rectangle) -> Polygon {
         },
     ];
 
-    return Polygon { points };
+    return ProjectPolygon { points };
 }
 
-fn eliminate_merge_edges(polygon1: &Polygon, polygon2: &Polygon) -> Option<Polygon> {
+fn eliminate_merge_edges(
+    polygon1: &ProjectPolygon,
+    polygon2: &ProjectPolygon,
+) -> Option<ProjectPolygon> {
     let mut result: Vec<PointLogical> = Vec::new();
 
     let points1 = &polygon1.points;
@@ -114,14 +165,17 @@ fn eliminate_merge_edges(polygon1: &Polygon, polygon2: &Polygon) -> Option<Polyg
                     result.push(points1[k].clone());
                 }
 
-                return Some(Polygon { points: result });
+                return Some(ProjectPolygon { points: result });
             }
         }
     }
     return None;
 }
 
-fn eliminate_merge_edges2(polygon1: &Polygon, polygon2: &Polygon) -> Option<Polygon> {
+fn eliminate_merge_edges2(
+    polygon1: &ProjectPolygon,
+    polygon2: &ProjectPolygon,
+) -> Option<ProjectPolygon> {
     let mut result: Vec<PointLogical> = Vec::new();
 
     let points1 = &polygon1.points;
@@ -169,14 +223,14 @@ fn eliminate_merge_edges2(polygon1: &Polygon, polygon2: &Polygon) -> Option<Poly
                     result.push(points1[k].clone());
                 }
 
-                return Some(Polygon { points: result });
+                return Some(ProjectPolygon { points: result });
             };
         }
     }
     return None;
 }
 
-fn extend_merge_edges(p: &Polygon) -> Polygon {
+fn extend_merge_edges(p: &ProjectPolygon) -> ProjectPolygon {
     if p.points.len() < 3 {
         return p.clone();
     }
@@ -210,15 +264,23 @@ fn extend_merge_edges(p: &Polygon) -> Polygon {
         }
     }
 
-    return Polygon { points };
+    return ProjectPolygon { points };
 }
 
 fn is_congruence(p1: &PointLogical, p2: &PointLogical, p3: &PointLogical) -> bool {
     return p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y) == 0;
 }
 
-fn merge(polygons: &Vec<Polygon>) -> Vec<Polygon> {
-    let mut result: Vec<Polygon> = Vec::new();
+fn is_rectangle(p: &ProjectPolygon) -> bool {
+    if p.points.len() != 4 {
+        return false;
+    }
+
+    return true;
+}
+
+fn merge(polygons: &Vec<ProjectPolygon>) -> Vec<ProjectPolygon> {
+    let mut result: Vec<ProjectPolygon> = Vec::new();
 
     if polygons.len() == 0 {
         return result;
@@ -249,7 +311,7 @@ fn merge(polygons: &Vec<Polygon>) -> Vec<Polygon> {
     return result;
 }
 
-fn turn_analysis(p: &Polygon) -> HashMap<PointLogical, (Direction, Direction)> {
+fn turn_analysis(p: &ProjectPolygon) -> HashMap<PointLogical, (Direction, Direction)> {
     let mut result = HashMap::new();
 
     let n = p.points.len();
@@ -345,13 +407,13 @@ fn coordinate_conversion_aux(d2: &(Direction, Direction)) -> (i32, i32, i32) {
     // 0,1,2,3 -> top_left, bottom_left, bottom_right, top_right
     let (mut dx, mut dy, mut i) = match d2 {
         (Direction::Up, Direction::Left) => (-1, 0, 3),
-        (Direction::Up, Direction::Right) => (0, 0, 0),
-        (Direction::Down, Direction::Left) => (-1, -1, 2),
+        (Direction::Up, Direction::Right) => (-1, -1, 2),
+        (Direction::Down, Direction::Left) => (0, 0, 0),
         (Direction::Down, Direction::Right) => (0, -1, 1),
-        (Direction::Left, Direction::Up) => (0, -1, 1),
+        (Direction::Left, Direction::Up) => (-1, 0, 3),
         (Direction::Left, Direction::Down) => (0, 0, 0),
         (Direction::Right, Direction::Up) => (-1, -1, 2),
-        (Direction::Right, Direction::Down) => (-1, 0, 3),
+        (Direction::Right, Direction::Down) => (0, -1, 1),
         _ => {
             panic!("impossible")
         }
@@ -362,6 +424,7 @@ fn coordinate_conversion_aux(d2: &(Direction, Direction)) -> (i32, i32, i32) {
 fn coordinate_conversion(
     point: &PointLogical,
     d2: &(Direction, Direction),
+    spacing: &PointScreen,
     c2p: &HashMap<Coordinate, Vec<PointScreen>>,
 ) -> PointScreen {
     let (dx, dy, i) = coordinate_conversion_aux(d2);
@@ -370,35 +433,43 @@ fn coordinate_conversion(
         y: point.y + dy,
     };
 
-    return c2p.get(&c).expect("point does doesn't in HashMap")[i as usize].clone();
+    let  p = c2p.get(&c).expect("point does doesn't in HashMap");
+
+    let ps = match i {
+        0 =>{
+            PointScreen{
+                x: p[0].x + spacing.x,
+                y: p[0].y + spacing.y,
+            }
+        }
+        1 =>{
+            PointScreen{
+                x: p[1].x + spacing.x,
+                y: p[1].y - spacing.y,
+            }
+        }
+        2 =>{
+            PointScreen{
+                x: p[2].x - spacing.x,
+                y: p[2].y - spacing.y,
+            }
+        }
+        3=>{
+            PointScreen{
+                x: p[3].x - spacing.x,
+                y: p[3].y + spacing.y,
+            }
+        }
+        _ => {panic!("impossible")}
+    };
+
+    println!("convert {} to {}, c = {}, i = {}, p = {:?}", point, ps, c, i,p);
+    return ps
 }
 
 #[derive(Debug, Clone, Hash)]
-pub struct Rectangle {
-    pub top_left: PointLogical,
-    pub bottom_right: PointLogical,
-}
-
-#[derive(Debug, Clone, Hash)]
-pub struct Polygon {
+pub struct ProjectPolygon {
     pub points: Vec<PointLogical>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PointLogical {
-    pub x: i32,
-    pub y: i32,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct PointScreen {
-    pub x: i32,
-    pub y: i32,
-}
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Coordinate {
-    pub x: i32,
-    pub y: i32,
 }
 
 #[derive(Debug)]
@@ -409,42 +480,26 @@ pub enum Direction {
     Down,
 }
 
-impl Rectangle {
-    pub fn new(c: &Coordinate) -> Rectangle {
-        Rectangle {
-            top_left: PointLogical { x: c.x, y: c.y },
-            bottom_right: PointLogical {
-                x: c.x + 1,
-                y: c.y + 1,
-            },
-        }
-    }
-    pub fn new2(c_tl: &Coordinate, c_br: &Coordinate) -> Rectangle {
-        Rectangle {
-            top_left: PointLogical {
-                x: c_tl.x,
-                y: c_tl.y,
-            },
-            bottom_right: PointLogical {
-                x: c_br.x + 1,
-                y: c_br.y + 1,
-            },
-        }
-    }
-}
-
-impl fmt::Display for PointLogical {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({},{})", self.x, self.y)
-    }
-}
-
-impl fmt::Display for Polygon {
+impl fmt::Display for ProjectPolygon {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut result = String::new();
         for p in self.points.iter() {
             result.push_str(&format!("{}->", p));
         }
         write!(f, "{}", result)
+    }
+}
+
+pub enum ProjectClass{
+    Project,
+    StatusRunning,
+}
+
+impl ProjectClass{
+    pub fn to_string(&self) -> String{
+        match self{
+            ProjectClass::Project => "project".to_string(),
+            ProjectClass::StatusRunning => "status_running".to_string(),
+        }
     }
 }

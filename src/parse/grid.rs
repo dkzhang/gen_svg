@@ -1,16 +1,21 @@
-use crate::config::{AppConfig};
-use crate::element::{ColumnHeader, Grid, RowGroup, RowHeader, Table};
-use crate::shape::{Draw, Path, Rectangle, Text};
-use svg::node::element::tag::Rectangle;
+use crate::config::AppConfig;
+use crate::element::{ColumnHeader, Coordinate, Grid, RowGroup, RowHeader};
 use crate::parse::PointScreen;
+use crate::shape::{Draw, Path, Rectangle, Text};
+use std::collections::HashMap;
 
-pub fn convert_grid<'a>(
-    g: &'a Grid,
-    top_left: PointScreen,
-    ac: &'a AppConfig,
-) -> (Vec<Box<dyn Draw + 'a>>, PointScreen) {
+pub fn convert_grid(
+    g: &Grid,
+    top_left: &PointScreen,
+    cr: i32,
+    ac: &AppConfig,
+) -> (
+    Vec<Box<dyn Draw>>,
+    HashMap<Coordinate, Vec<PointScreen>>,
+    i32,
+) {
     let para = &ac.parameters;
-    let (x,y) = (top_left.x, top_left.y);
+    let (x, y) = (top_left.x, top_left.y);
 
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
@@ -52,30 +57,56 @@ pub fn convert_grid<'a>(
     path.d = d;
     result.push(path);
 
-    let bottom_right = PointScreen {
-        x: x + width,
-        y: y + height,
-    };
-    return (result, bottom_right);
+    let mut pm: HashMap<Coordinate, Vec<PointScreen>> = HashMap::new();
+    for i in 0..g.iw {
+        for j in 0..g.ih {
+            pm.insert(
+                Coordinate { x: i, y: j + cr },
+                vec![
+                    PointScreen {
+                        x: top_left.x + i * para.cell_width,
+                        y: top_left.y + j * para.cell_height,
+                    },
+                    PointScreen {
+                        x: top_left.x + i * para.cell_width,
+                        y: top_left.y + (j + 1) * para.cell_height,
+                    },
+                    PointScreen {
+                        x: top_left.x + (i + 1) * para.cell_width,
+                        y: top_left.y + (j + 1) * para.cell_height,
+                    },
+                    PointScreen {
+                        x: top_left.x + (i + 1) * para.cell_width,
+                        y: top_left.y + j * para.cell_height,
+                    },
+
+                ],
+            );
+        }
+    }
+
+    return (result, pm, height);
 }
 
-pub fn convert_column_header<'a>(
-    column_header: &'a ColumnHeader,
-    top_left: PointScreen,
-    ac: &'a AppConfig,
-) -> (Vec<Box<dyn Draw + 'a>>, PointScreen) {
+pub fn convert_column_header(
+    header: &ColumnHeader,
+    origin_point: &PointScreen,
+    ac: &AppConfig,
+) -> Vec<Box<dyn Draw>> {
     let para = &ac.parameters;
 
     let height = para.head_height;
     let width = para.cell_width;
 
-    let mut xx = top_left.x;
-    let mut yy = top_left.y;
+    let c_top_left = PointScreen {
+        x: origin_point.x,
+        y: origin_point.y - header.rows.len() as i32 * height,
+    };
 
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
-    let mut hy = top_left.y;
-    for cr in column_header.rows.iter() {
-        let mut hx = top_left.x;
+    let mut hy = c_top_left.y;
+    for cr in header.rows.iter() {
+        let mut hx = c_top_left.x;
         for c in cr.iter() {
             let rect = Box::new(Rectangle {
                 id: None,
@@ -97,35 +128,27 @@ pub fn convert_column_header<'a>(
             result.push(text);
 
             hx += c.iw * width;
-
-            if hx > xx {
-                xx = hx;
-            }
         }
         hy += height;
-        if hy > yy {
-            yy = hy;
-        }
     }
-    let bottom_right = PointScreen {
-        x: xx,
-        y: yy,
-    };
-    return (result, bottom_right);
+
+    return result;
 }
 
-pub fn convert_row_header<'a>(
-    row_header: &'a RowHeader,
-    top_left: PointScreen,
-    style: &'a AppConfig,
-) -> (Vec<Box<dyn Draw + 'a>>, PointScreen) {
+pub fn convert_row_header(
+    row_header: &RowHeader,
+    top_right: &PointScreen,
+    style: &AppConfig,
+) -> Vec<Box<dyn Draw>> {
     let para = &style.parameters;
 
     let height = para.cell_height;
     let width = para.head_width;
 
-    let mut xx = top_left.x;
-    let mut yy = top_left.y;
+    let top_left = PointScreen {
+        x: top_right.x - row_header.cols.len() as i32 * width,
+        y: top_right.y,
+    };
 
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
     let mut hx = top_left.x;
@@ -152,63 +175,23 @@ pub fn convert_row_header<'a>(
             result.push(text);
 
             hy += r.ih * height;
-
-            if hy > yy {
-                yy = hy;
-            }
         }
         hx += width;
-        if hx > xx {
-            xx = hx;
-        }
     }
-
-    let bottom_right = PointScreen {
-        x: xx,
-        y: yy,
-    };
-    return (result, bottom_right);
+    return result;
 }
 
-pub fn compute_row_header_pos<'a>(
-    row_groups: &'a Vec<RowGroup>,
-    top_left: PointScreen,
-    style: &'a AppConfig,
-) -> PointScreen {
-    let para = &style.parameters;
-
-    let height = para.cell_height;
-    let width = para.head_width;
-
-    let mut xx = top_left.x;
-    let mut yy = top_left.y;
-
-    let mut gy = top_left.y;
-
+pub fn compute_row_header_width(row_groups: &Vec<RowGroup>, style: &AppConfig) -> i32 {
+    let mut maxc: i32 = 0;
     for rg in row_groups.iter() {
-        let mut hx = top_left.x;
-        for cc in rg.header.cols.iter() {
-            let mut hy = gy;
-            for r in cc {
-                hy += r.ih * height;
-
-                if hy > yy {
-                    yy = hy;
-                }
-            }
-            hx += width;
-            if hx > xx {
-                xx = hx;
-            }
+        let c = rg.header.cols.len() as i32;
+        if c > maxc {
+            maxc = c;
         }
-
-        gy = yy;
-        gy += para.group_spacing_height;
     }
+    return maxc * style.parameters.head_width;
+}
 
-    let bottom_right = PointScreen {
-        x: xx,
-        y: yy,
-    };
-    return bottom_right;
+pub fn compute_column_header_height(column_header: &ColumnHeader, style: &AppConfig) -> i32 {
+    return column_header.rows.len() as i32 * style.parameters.head_height;
 }

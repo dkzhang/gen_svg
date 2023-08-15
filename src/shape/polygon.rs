@@ -1,12 +1,13 @@
 
 use crate::shape::Draw;
 use svg::node::element::Polygon as svg_Polygon;
+use crate::parse::PointScreen;
 
 pub struct Polygon {
     pub id: Option<String>,
     pub class: Vec<String>,
 
-    pub points: Vec<(i32, i32)>,
+    pub points: Vec<PointScreen>,
 
 }
 
@@ -30,10 +31,10 @@ impl Draw for Polygon {
     }
 }
 
-fn vec_point_to_string(vec: &Vec<(i32, i32)>) -> String {
+fn vec_point_to_string(vec: &Vec<PointScreen>) -> String {
     let mut s = String::new();
-    for (x, y) in vec {
-        s.push_str(&format!("{},{} ", x, y));
+    for p in vec {
+        s.push_str(&format!("{},{} ", p.x, p.y));
     }
     return s;
 }
