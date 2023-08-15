@@ -13,7 +13,10 @@ fn main() {
         // Rectangle::new(Coordinate { x: 0, y: 0 }),
         // Rectangle::new(Coordinate { x: 0, y: 1 }),
         Rectangle::new2(&Coordinate { x: 0, y: 0 }, &Coordinate { x: 0, y: 2 }),
-        Rectangle::new2(&Coordinate { x: 1, y: 1 }, &Coordinate { x: 2, y: 1 }),
+        Rectangle::new2(&Coordinate { x: 1, y: 2 }, &Coordinate { x: 2, y: 2 }),
+        Rectangle::new2(&Coordinate { x: 2, y: 0 }, &Coordinate { x: 2, y: 1 }),
+        Rectangle::new(&Coordinate { x: 1, y: 0 }),
+        Rectangle::new(&Coordinate { x: 1, y: 1 }),
     ];
 
     let polygons = rects
@@ -180,17 +183,30 @@ fn extend_merge_edges(p: &Polygon) -> Polygon {
 
     let mut points: Vec<PointLogical> = p.points.clone();
 
-    let (mut i, mut n) = (0, points.len());
-    while i < n {
+    let (mut i, mut n, mut exist_remove) = (0, points.len(), false);
+
+    loop {
         let p1 = &points[i];
         let p2 = &points[(i + 1) % n];
         let p3 = &points[(i + 2) % points.len()];
 
-        if is_congruence(p1, p2, p3) {
+        if is_congruence(p1, p2, p3) || *p1 == *p2 {
             points.remove((i + 1) % n);
+            exist_remove = true;
             n -= 1;
         } else {
             i += 1;
+
+            if i >= n {
+                if exist_remove {
+                    // is exist remove, scan again
+                    i = 0;
+                    exist_remove = false;
+                } else {
+                    // break after a no remove full scan
+                    break;
+                }
+            }
         }
     }
 
