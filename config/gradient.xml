@@ -1,0 +1,18 @@
+<defs>
+    <linearGradient id="gradient_blue" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#6083CB;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:#3E70CA;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#2E61BA;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient_2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#6083CB;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:#3E70CA;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#2E61BA;stop-opacity:1" />
+    </linearGradient>
+
+    <radialGradient id="gradient2" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" style="stop-color:rgb(0,0,255);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(0,255,0);stop-opacity:1" />
+    </radialGradient>
+</defs>

@@ -1,6 +1,8 @@
 mod parameters;
+mod gradient;
 
 pub use parameters::*;
+pub use gradient::*;
 
 use serde::{Deserialize, Serialize};
 

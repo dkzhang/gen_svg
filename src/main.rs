@@ -2,6 +2,7 @@ mod config;
 mod element;
 mod parse;
 mod shape;
+mod gen_element;
 
 
 use crate::element::{ColumnHeader, ColumnHeaderCell, Coordinate, Grid, Project, ProjectRect, RowGroup, RowHeader, RowHeaderCell, Table};
@@ -14,7 +15,7 @@ use serde_json;
 use simplelog::*;
 use std::fs::File;
 
-use crate::config::AppConfig as MyConfig;
+use crate::config::{AppConfig,Defs,LinearGradient };
 use crate::parse::table::convert_table;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;
@@ -23,11 +24,11 @@ use svg::node::element::tag::Definitions;
 use svg::node::element::{Definitions, Link, Style};
 use crate::parse::{convert_project, PointScreen};
 
-fn load_config_style<P: AsRef<Path>>(path: P) -> Result<MyConfig, Box<dyn std::error::Error>> {
+fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
-    let config: MyConfig = toml::from_str(&contents)?;
+    let config: AppConfig = toml::from_str(&contents)?;
     Ok(config)
 }
 
@@ -173,10 +174,16 @@ fn main() {
 
     // read css file
     let css_content =
-        fs::read_to_string("./style.css").expect("Something went wrong reading the css file");
-
+        fs::read_to_string("./config/style.css").expect("Something went wrong reading the css file");
     let css_style_def = Definitions::new().add(Style::new(css_content));
 
+    // read gradient xml file
+    let gradient_filename = "./config/gradient.xml";
+    let file_gradient = File::open(gradient_filename).expect("Failed to open json file");
+    let gradient_defs_struct:Defs = serde_xml_rs::from_reader(file_gradient).expect("Failed to read gradient from xml file");
+    let gradient_defs = parse::gradient::convert_to_gradient(gradient_defs_struct);
+
+    // create svg document
     let mut document = Document::new()
         .set("width", "3840")
         .set("height", "2160")
@@ -184,7 +191,8 @@ fn main() {
         .set("preserveAspectRatio", "xMidYMid meet")
         .set("xmlns", "http://www.w3.org/2000/svg")
         .set("xmlns:xlink", "http://www.w3.org/1999/xlink")
-        .add(css_style_def);
+        .add(css_style_def)
+        .add(gradient_defs);
 
     // write shape in svg
     // write table

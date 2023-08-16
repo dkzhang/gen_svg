@@ -10,6 +10,7 @@
 pub mod grid;
 pub mod table;
 pub mod project;
+pub mod gradient;
 
 use std::fmt;
 pub use grid::*;
