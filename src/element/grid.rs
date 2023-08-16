@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Table {
-    pub col_headers: ColumnHeader,
+    pub col_headers: ColumnHeaders,
     pub row_groups: Vec<RowGroup>,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -27,7 +27,7 @@ pub struct RowHeaderCell {
     pub text: String,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct ColumnHeader {
+pub struct ColumnHeaders {
     pub rows: Vec<Vec<ColumnHeaderCell>>,
 }
 

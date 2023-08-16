@@ -1,5 +1,5 @@
 use crate::config::AppConfig;
-use crate::element::{ColumnHeader, Coordinate, Grid, RowGroup, RowHeader};
+use crate::element::{ColumnHeaders, Coordinate, Grid, RowGroup, RowHeader};
 use crate::parse::PointScreen;
 use crate::shape::{Draw, Path, Rectangle, Text};
 use std::collections::HashMap;
@@ -89,7 +89,7 @@ pub fn convert_grid(
 }
 
 pub fn convert_column_header(
-    header: &ColumnHeader,
+    header: &ColumnHeaders,
     origin_point: &PointScreen,
     ac: &AppConfig,
 ) -> Vec<Box<dyn Draw>> {
@@ -192,6 +192,6 @@ pub fn compute_row_header_width(row_groups: &Vec<RowGroup>, style: &AppConfig) -
     return maxc * style.parameters.head_width;
 }
 
-pub fn compute_column_header_height(column_header: &ColumnHeader, style: &AppConfig) -> i32 {
+pub fn compute_column_header_height(column_header: &ColumnHeaders, style: &AppConfig) -> i32 {
     return column_header.rows.len() as i32 * style.parameters.head_height;
 }

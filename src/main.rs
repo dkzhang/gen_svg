@@ -5,7 +5,7 @@ mod shape;
 mod gen_element;
 
 
-use crate::element::{ColumnHeader, ColumnHeaderCell, Coordinate, Grid, Project, ProjectRect, RowGroup, RowHeader, RowHeaderCell, Table};
+use crate::element::{ColumnHeaders, ColumnHeaderCell, Coordinate, Grid, Project, ProjectRect, RowGroup, RowHeader, RowHeaderCell, Table};
 use crate::shape::Draw;
 use std::fs;
 use svg::Document;
@@ -15,12 +15,11 @@ use serde_json;
 use simplelog::*;
 use std::fs::File;
 
-use crate::config::{AppConfig,Defs,LinearGradient };
+use crate::config::{AppConfig,Defs};
 use crate::parse::table::convert_table;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;
 use serde_json::from_reader;
-use svg::node::element::tag::Definitions;
 use svg::node::element::{Definitions, Link, Style};
 use crate::parse::{convert_project, PointScreen};
 
@@ -170,7 +169,7 @@ fn main() {
     //     .expect("Failed to write data");
 
     let file_json_r = File::open(json_filename).expect("Failed to open json file");
-    let table = from_reader(BufReader::new(file_json_r)).expect("Failed to read table from json file");
+    let mut table:Table = from_reader(BufReader::new(file_json_r)).expect("Failed to read table from json file");
 
     // read css file
     let css_content =
@@ -197,6 +196,9 @@ fn main() {
     // write shape in svg
     // write table
     let top_left = PointScreen { x: 0, y: 0 };
+    let (col_headers,days) = gen_element::col_header::from_date("20230816", "20230916");
+    table.col_headers = col_headers;
+    println!("days: {}", days);
     let (mut vd, points_map) = convert_table(&table, top_left, &app_config);
 
     for d in vd {

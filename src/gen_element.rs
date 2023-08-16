@@ -1,1 +1,2 @@
-mod col_header;
+pub mod col_header;
+
