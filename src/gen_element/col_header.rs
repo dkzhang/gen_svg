@@ -1,8 +1,9 @@
-use crate::element::{ColumnHeaders, ColumnHeaderCell, RowHeader};
+use std::collections::HashMap;
+use crate::element::{ColumnHeaders, ColumnHeaderCell, RowHeaders};
 use chrono::{NaiveDate, Duration, Datelike};
 use chrono::format::Fixed::ShortMonthName;
 
-pub fn from_date(start: &str, end: &str) -> (ColumnHeaders,i32) {
+pub fn from_date(start: &str, end: &str) -> (ColumnHeaders,HashMap<String,i32>, Vec<i32>) {
     let start_date = NaiveDate::parse_from_str(start, "%Y%m%d").expect("Failed to parse date");
     let end_date = NaiveDate::parse_from_str(end, "%Y%m%d").expect("Failed to parse date");
 
@@ -13,6 +14,8 @@ pub fn from_date(start: &str, end: &str) -> (ColumnHeaders,i32) {
     let mut cm = start_date;
     let mut cm_days = 0;
 
+    let mut col_index_map:HashMap<String,i32> = HashMap::new();
+
     for i in 0..=duration.num_days() {
         let current_date = start_date + Duration::days(i);
 
@@ -20,6 +23,8 @@ pub fn from_date(start: &str, end: &str) -> (ColumnHeaders,i32) {
             iw: 1,
             text: current_date.format("%d").to_string(),
         });
+
+        col_index_map.insert(current_date.format("%Y%m%d").to_string(), i as i32);
 
         if current_date.month() != cm.month() {
             month_row.push(ColumnHeaderCell{
@@ -41,5 +46,5 @@ pub fn from_date(start: &str, end: &str) -> (ColumnHeaders,i32) {
 
     return (ColumnHeaders {
         rows: vec![month_row, day_row],
-    }, duration.num_days() as i32 + 1);
+    }, col_index_map, vec![duration.num_days() as i32 + 1]);
 }

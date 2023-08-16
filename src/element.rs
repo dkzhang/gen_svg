@@ -17,3 +17,6 @@ impl fmt::Display for PointLogical {
         write!(f, "({},{})", self.x, self.y)
     }
 }
+
+#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
+pub struct LogicalUnit (i32,i32);

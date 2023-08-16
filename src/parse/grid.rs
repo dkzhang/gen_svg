@@ -1,5 +1,5 @@
 use crate::config::AppConfig;
-use crate::element::{ColumnHeaders, Coordinate, Grid, RowGroup, RowHeader};
+use crate::element::{ColumnHeaders, Coordinate, Grid, RowGroup, RowHeaders};
 use crate::parse::PointScreen;
 use crate::shape::{Draw, Path, Rectangle, Text};
 use std::collections::HashMap;
@@ -136,7 +136,7 @@ pub fn convert_column_header(
 }
 
 pub fn convert_row_header(
-    row_header: &RowHeader,
+    row_header: &RowHeaders,
     top_right: &PointScreen,
     style: &AppConfig,
 ) -> Vec<Box<dyn Draw>> {

@@ -5,7 +5,7 @@ mod shape;
 mod gen_element;
 
 
-use crate::element::{ColumnHeaders, ColumnHeaderCell, Coordinate, Grid, Project, ProjectRect, RowGroup, RowHeader, RowHeaderCell, Table};
+use crate::element::{ColumnHeaders, ColumnHeaderCell, Coordinate, Grid, Project, ProjectRect, RowGroup, RowHeaders, RowHeaderCell, Table};
 use crate::shape::Draw;
 use std::fs;
 use svg::Document;
@@ -21,6 +21,7 @@ use std::io::{BufReader, Read, Write};
 use std::path::Path;
 use serde_json::from_reader;
 use svg::node::element::{Definitions, Link, Style};
+use crate::gen_element::row_headers::{DeviceGroup, DeviceList};
 use crate::parse::{convert_project, PointScreen};
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
@@ -196,9 +197,11 @@ fn main() {
     // write shape in svg
     // write table
     let top_left = PointScreen { x: 0, y: 0 };
-    let (col_headers,days) = gen_element::col_header::from_date("20230816", "20230916");
+    let (col_headers,col_index_map, group_statistics) = gen_element::col_header::from_date("20230816", "20230916");
     table.col_headers = col_headers;
-    println!("days: {}", days);
+    println!("{:?}", col_index_map);
+    println!("{:?}", group_statistics);
+
     let (mut vd, points_map) = convert_table(&table, top_left, &app_config);
 
     for d in vd {
@@ -231,7 +234,26 @@ fn main() {
         document = document.add(d.draw());
     }
 
+    let project3 = Project{
+        id: String::from("003"),
+        name: String::from("Project3"),
+        rects: vec![
+            ProjectRect::new2(Coordinate{x:3,y:3}, &Coordinate { x: 6, y: 3 }),
+            ProjectRect::new2(Coordinate{x:7,y:0}, &Coordinate { x: 8, y: 3 }),
+            ProjectRect::new2(Coordinate{x:9,y:0}, &Coordinate { x: 11, y: 0 }),
+        ],
+    };
+    let mut project3_vd = convert_project(&project3, &points_map,&app_config);
+    for d in project3_vd {
+        document = document.add(d.draw());
+    }
+
     svg::save("image.svg", &document).unwrap();
+
+    let dl = DeviceList::load_from_json("./config/devices.json");
+    let ndl = dl.expand_abbreviation();
+    println!("{:?}", dl);
+    println!("{:?}", ndl);
 
     log::info!(
         "This is an information message from file {} at line {} .",

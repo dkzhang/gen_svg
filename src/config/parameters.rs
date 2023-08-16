@@ -14,4 +14,5 @@ pub struct Parameters {
     pub shape_scale_height: f32,
 
     pub group_spacing_height: i32,
+    pub group_spacing_width: i32,
 }

@@ -204,7 +204,6 @@ fn eliminate_merge_edges2(
                 &points2[j],
                 &points2[(j + 1) % n2],
             ) {
-                println!("found a merge edge");
                 // found a merge edge
                 // eliminate this edge
                 for k in 0..=i {
@@ -471,7 +470,6 @@ fn coordinate_conversion(
         _ => {panic!("impossible")}
     };
 
-    println!("convert {} to {}, c = {}, i = {}, p = {:?}", point, ps, c, i,p);
     return ps
 }
 

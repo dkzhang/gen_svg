@@ -7,7 +7,7 @@ pub struct Table {
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RowGroup {
-    pub header: RowHeader,
+    pub header: RowHeaders,
     pub grid: Grid,
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -18,7 +18,7 @@ pub struct Grid {
     pub ih: i32,
 }
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RowHeader {
+pub struct RowHeaders {
     pub cols: Vec<Vec<RowHeaderCell>>,
 }
 #[derive(Serialize, Deserialize, Debug)]

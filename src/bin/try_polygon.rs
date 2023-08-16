@@ -142,7 +142,6 @@ fn eliminate_merge_edges2(polygon1: &Polygon, polygon2: &Polygon) -> Option<Poly
                 &points2[j],
                 &points2[(j + 1) % n2],
             ) {
-                println!("found a merge edge");
                 // found a merge edge
                 // eliminate this edge
                 for k in 0..=i {
