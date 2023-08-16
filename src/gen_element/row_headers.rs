@@ -8,13 +8,13 @@ pub fn from_devices(dl : &DeviceList) -> (RowHeaders, HashMap<String,i32>, Vec<i
     };
     let mut row_index_map:HashMap<String,i32> = HashMap::new();
 
-    let mut row_statistic:Vec<i32> = vec![];
+    let mut y_segments:Vec<i32> = vec![];
 
     let mut groups:Vec<RowHeaderCell> = vec![];
     let mut devices:Vec<RowHeaderCell> = vec![];
 
     for dg in &dl.groups {
-        row_statistic.push(dg.devices.len() as i32);
+        y_segments.push(dg.devices.len() as i32);
         groups.push(RowHeaderCell{
             ih: dg.devices.len() as i32,
             text: dg.name.clone(),
@@ -28,7 +28,7 @@ pub fn from_devices(dl : &DeviceList) -> (RowHeaders, HashMap<String,i32>, Vec<i
         }
     }
 
-    return (row_headers, row_index_map, row_statistic);
+    return (row_headers, row_index_map, y_segments);
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct DeviceList{

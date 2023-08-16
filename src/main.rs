@@ -197,10 +197,10 @@ fn main() {
     // write shape in svg
     // write table
     let top_left = PointScreen { x: 0, y: 0 };
-    let (col_headers,col_index_map, group_statistics) = gen_element::col_header::from_date("20230816", "20230916");
+    let (col_headers,col_index_map, x_segments) = gen_element::col_header::from_date("20230816", "20230916");
     table.col_headers = col_headers;
     println!("{:?}", col_index_map);
-    println!("{:?}", group_statistics);
+    println!("{:?}", x_segments);
 
     let (mut vd, points_map) = convert_table(&table, top_left, &app_config);
 

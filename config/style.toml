@@ -1,5 +1,5 @@
 [parameters]
-head_width = 30
+head_width = 50
 head_height = 10
 cell_width = 40
 cell_height = 30
@@ -8,5 +8,6 @@ project_spacing_height = 2
 shape_scale_width = 0.0
 shape_scale_height = 0.0
 group_spacing_height = 2
+group_spacing_width = 2
 
 
