@@ -93,10 +93,18 @@ fn convert_to_vd(
         });
 
         println!("polygon: {:?}", polygon.points);
+        let rc = find_suitable_rect_center(&polygon.points);
 
         result.push(polygon);
 
-        // TODO: add text
+        let text = Box::new(Text {
+            id: Some(id.clone()),
+            class: vec![],
+            x: rc.x,
+            y: rc.y,
+            content: name.clone(),
+        });
+        result.push(text);
     }
 
     return result;
@@ -465,6 +473,56 @@ fn coordinate_conversion(
 
     println!("convert {} to {}, c = {}, i = {}, p = {:?}", point, ps, c, i,p);
     return ps
+}
+
+// finding a suitable rectangle in a polygon, return it's center
+fn find_suitable_rect_center(vps: &Vec<PointScreen>) -> PointScreen{
+    let mut upwards:Vec<(&PointScreen, &PointScreen)> = Vec::new();
+    let mut downwards:Vec<(&PointScreen, &PointScreen)> = Vec::new();
+
+    for i in 0..vps.len(){
+        let p0 = &vps[i];
+        let p1 = &vps[(i+1)%vps.len()];
+        if p0.x == p1.x{
+            if p0.y < p1.y{
+                downwards.push((p0, p1));
+            }else{
+                upwards.push((p0, p1));
+            }
+        }
+    }
+
+    let mut result = PointScreen{x:0,y:0};
+    let mut max_width = 0;
+
+    for up in upwards.iter(){
+        for down in downwards.iter(){
+            // the down line must on the left of the up line
+            if up.0.x <= down.0.x{
+                continue;
+            }
+
+            let width = up.0.x - down.0.x;
+            if width <= max_width{
+                continue;
+            }
+
+            // find intersection of y
+            if down.0.y >= up.0.y || down.1.y <= up.1.y{
+                // no intersection
+                continue;
+            }
+
+            let y = std::cmp::max(down.0.y, up.1.y);
+            let yy = std::cmp::min(down.1.y, up.0.y);
+
+            max_width = width;
+            result = PointScreen{x:(up.0.x + down.0.x)/2, y:(y + yy)/2};
+        }
+    }
+    assert_ne!(max_width, 0);
+
+    return result;
 }
 
 #[derive(Debug, Clone, Hash)]
