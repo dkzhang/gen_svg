@@ -11,19 +11,22 @@ pub mod grid;
 pub mod table;
 pub mod project;
 pub mod gradient;
+pub mod c2ps;
 
 use std::fmt;
 pub use grid::*;
 pub use table::*;
 pub use project::*;
+pub use c2ps::*;
 
 
 
+pub type ScreenUnit = i32;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
 pub struct PointScreen {
-    pub x: i32,
-    pub y: i32,
+    pub x: ScreenUnit,
+    pub y: ScreenUnit,
 }
 
 impl fmt::Display for PointScreen {

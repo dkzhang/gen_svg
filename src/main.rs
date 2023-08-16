@@ -1,11 +1,13 @@
 mod config;
 mod element;
+mod gen_element;
 mod parse;
 mod shape;
-mod gen_element;
 
-
-use crate::element::{ColumnHeaders, ColumnHeaderCell, Coordinate, Grid, Project, ProjectRect, RowGroup, RowHeaders, RowHeaderCell, Table};
+use crate::element::{
+    ColumnHeaderCell, ColumnHeaders, Coordinate, Grid, Project, ProjectRect, RowHeaderCell,
+    RowHeaders, Table,
+};
 use crate::shape::Draw;
 use std::fs;
 use svg::Document;
@@ -15,14 +17,15 @@ use serde_json;
 use simplelog::*;
 use std::fs::File;
 
-use crate::config::{AppConfig,Defs};
+use crate::config::{AppConfig, Defs};
+use crate::gen_element::col_header::from_date;
+use crate::gen_element::row_headers::{from_devices, DeviceGroup, DeviceList};
 use crate::parse::table::convert_table;
+use crate::parse::{convert_project, PointScreen};
+use serde_json::from_reader;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;
-use serde_json::from_reader;
 use svg::node::element::{Definitions, Link, Style};
-use crate::gen_element::row_headers::{DeviceGroup, DeviceList};
-use crate::parse::{convert_project, PointScreen};
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -47,140 +50,36 @@ fn main() {
     .unwrap();
 
     let app_config = load_config_style("./config/style.toml").unwrap();
+    let top_left = PointScreen { x: 0, y: 0 };
 
-    // let table_origin = Table {
-    //     col_headers: ColumnHeader {
-    //         rows: vec![
-    //             vec![ColumnHeaderCell {
-    //                 iw: 10,
-    //                 text: String::from("Oct"),
-    //             }],
-    //             vec![
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("1"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("2"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("3"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("4"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("5"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("6"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("7"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("8"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("9"),
-    //                 },
-    //                 ColumnHeaderCell {
-    //                     iw: 1,
-    //                     text: String::from("10"),
-    //                 },
-    //             ],
-    //         ],
-    //     },
-    //     row_groups: vec![
-    //         RowGroup {
-    //             header: RowHeader {
-    //                 cols: vec![
-    //                     vec![RowHeaderCell {
-    //                         ih: 3,
-    //                         text: String::from("F301-3"),
-    //                     }],
-    //                     vec![
-    //                         RowHeaderCell {
-    //                             ih: 1,
-    //                             text: String::from("F301"),
-    //                         },
-    //                         RowHeaderCell {
-    //                             ih: 1,
-    //                             text: String::from("F302"),
-    //                         },
-    //                         RowHeaderCell {
-    //                             ih: 1,
-    //                             text: String::from("F303"),
-    //                         },
-    //                     ],
-    //                 ],
-    //             },
-    //             grid: Grid {
-    //                 id: None,
-    //                 iw: 10,
-    //                 ih: 3,
-    //             },
-    //         },
-    //         RowGroup {
-    //             header: RowHeader {
-    //                 cols: vec![
-    //                     vec![RowHeaderCell {
-    //                         ih: 3,
-    //                         text: String::from("F401-3"),
-    //                     }],
-    //                     vec![
-    //                         RowHeaderCell {
-    //                             ih: 1,
-    //                             text: String::from("F401"),
-    //                         },
-    //                         RowHeaderCell {
-    //                             ih: 1,
-    //                             text: String::from("F402"),
-    //                         },
-    //                         RowHeaderCell {
-    //                             ih: 1,
-    //                             text: String::from("F403"),
-    //                         },
-    //                     ],
-    //                 ],
-    //             },
-    //             grid: Grid {
-    //                 id: None,
-    //                 iw: 10,
-    //                 ih: 5,
-    //             },
-    //         },
-    //     ],
-    // };
-    //
-    // let table_json = serde_json::to_string_pretty(&table_origin).expect("Failed to serialize data");
-    //
-    let json_filename = "table.json";
-    // // Write the JSON string to a file.
-    // let mut file_json_w = File::create(json_filename).expect("Failed to create file");
-    // file_json_w.write_all(table_json.as_bytes())
-    //     .expect("Failed to write data");
+    let (col_headers, col_index_map, x_segments) =
+        from_date("20230816", "20230916");
+    let (row_headers, row_index_map, y_segments) =
+        from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
 
-    let file_json_r = File::open(json_filename).expect("Failed to open json file");
-    let mut table:Table = from_reader(BufReader::new(file_json_r)).expect("Failed to read table from json file");
+    let table_origin = element::Table{
+        col_headers,
+        row_headers,
+        grid: Grid {
+            id: None,
+            x_segments,
+            y_segments,
+        },
+    };
+
+    let table_json = "table.json";
+    table_origin.save_to_json(table_json);
 
     // read css file
-    let css_content =
-        fs::read_to_string("./config/style.css").expect("Something went wrong reading the css file");
+    let css_content = fs::read_to_string("./config/style.css")
+        .expect("Something went wrong reading the css file");
     let css_style_def = Definitions::new().add(Style::new(css_content));
 
     // read gradient xml file
     let gradient_filename = "./config/gradient.xml";
     let file_gradient = File::open(gradient_filename).expect("Failed to open json file");
-    let gradient_defs_struct:Defs = serde_xml_rs::from_reader(file_gradient).expect("Failed to read gradient from xml file");
+    let gradient_defs_struct: Defs =
+        serde_xml_rs::from_reader(file_gradient).expect("Failed to read gradient from xml file");
     let gradient_defs = parse::gradient::convert_to_gradient(gradient_defs_struct);
 
     // create svg document
@@ -196,54 +95,51 @@ fn main() {
 
     // write shape in svg
     // write table
-    let top_left = PointScreen { x: 0, y: 0 };
-    let (col_headers,col_index_map, x_segments) = gen_element::col_header::from_date("20230816", "20230916");
-    table.col_headers = col_headers;
-    println!("{:?}", col_index_map);
-    println!("{:?}", x_segments);
+    let table = Table::load_from_json(table_json);
 
-    let (mut vd, points_map) = convert_table(&table, top_left, &app_config);
+    let (mut vd, c2ps) = convert_table(&table, top_left, &app_config);
 
     for d in vd {
         document = document.add(d.draw());
     }
 
     //write project
-    let project1 = Project{
+    let project1 = Project {
         id: String::from("001"),
         name: String::from("Project1"),
         rects: vec![
-            ProjectRect::new2(Coordinate{x:0,y:2}, &Coordinate { x: 1, y: 3 }),
-            ProjectRect::new2(Coordinate{x:2,y:0}, &Coordinate { x: 2, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 0, y: 2 }, &Coordinate { x: 1, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 2, y: 0 }, &Coordinate { x: 2, y: 3 }),
         ],
     };
-    let mut project1_vd = convert_project(&project1, &points_map,&app_config);
+    let mut project1_vd = convert_project(&project1, &c2ps, &app_config);
     for d in project1_vd {
         document = document.add(d.draw());
     }
 
-    let project2 = Project{
+    let project2 = Project {
         id: String::from("002"),
         name: String::from("Project2"),
-        rects: vec![
-            ProjectRect::new2(Coordinate{x:3,y:1}, &Coordinate { x: 6, y: 2 }),
-        ],
+        rects: vec![ProjectRect::new2(
+            Coordinate { x: 3, y: 1 },
+            &Coordinate { x: 6, y: 2 },
+        )],
     };
-    let mut project2_vd = convert_project(&project2, &points_map,&app_config);
+    let mut project2_vd = convert_project(&project2, &c2ps, &app_config);
     for d in project2_vd {
         document = document.add(d.draw());
     }
 
-    let project3 = Project{
+    let project3 = Project {
         id: String::from("003"),
         name: String::from("Project3"),
         rects: vec![
-            ProjectRect::new2(Coordinate{x:3,y:3}, &Coordinate { x: 6, y: 3 }),
-            ProjectRect::new2(Coordinate{x:7,y:0}, &Coordinate { x: 8, y: 3 }),
-            ProjectRect::new2(Coordinate{x:9,y:0}, &Coordinate { x: 11, y: 0 }),
+            ProjectRect::new2(Coordinate { x: 3, y: 3 }, &Coordinate { x: 6, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 7, y: 0 }, &Coordinate { x: 8, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 9, y: 0 }, &Coordinate { x: 11, y: 0 }),
         ],
     };
-    let mut project3_vd = convert_project(&project3, &points_map,&app_config);
+    let mut project3_vd = convert_project(&project3, &c2ps, &app_config);
     for d in project3_vd {
         document = document.add(d.draw());
     }

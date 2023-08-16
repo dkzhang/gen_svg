@@ -3,9 +3,6 @@ use serde::{Deserialize, Serialize};
 use crate::element::{RowHeaderCell, RowHeaders};
 
 pub fn from_devices(dl : &DeviceList) -> (RowHeaders, HashMap<String,i32>, Vec<i32>) {
-    let mut row_headers = RowHeaders{
-        cols: vec![],
-    };
     let mut row_index_map:HashMap<String,i32> = HashMap::new();
 
     let mut y_segments:Vec<i32> = vec![];
@@ -27,6 +24,10 @@ pub fn from_devices(dl : &DeviceList) -> (RowHeaders, HashMap<String,i32>, Vec<i
             });
         }
     }
+
+    let row_headers = RowHeaders{
+        cols: vec![groups, devices],
+    };
 
     return (row_headers, row_index_map, y_segments);
 }

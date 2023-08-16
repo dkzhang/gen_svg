@@ -8,23 +8,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/config/devices.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gen_element/row_headers.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/parse/c2ps.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/style.toml" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen_svg.log" beforeDir="false" afterPath="$PROJECT_DIR$/gen_svg.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/image.svg" beforeDir="false" afterPath="$PROJECT_DIR$/image.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/try_polygon.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/bin/try_polygon.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/config/parameters.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/parameters.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/grid.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen_element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen_element/col_header.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element/col_header.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/element/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/table.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gen_element/row_headers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element/row_headers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parse/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/grid.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parse/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/project.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/table.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/table.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/table.json" beforeDir="false" afterPath="$PROJECT_DIR$/table.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,21 +50,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/MyProjects/Rust/gen_svg/config",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/MyProjects/Rust/gen_svg/config&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\MyProjects\Rust\gen_svg\config" />
@@ -105,7 +102,9 @@
       <updated>1692163171937</updated>
       <workItem from="1692163173281" duration="3016000" />
       <workItem from="1692166551565" duration="3130000" />
-      <workItem from="1692174323640" duration="5495000" />
+      <workItem from="1692174323640" duration="8649000" />
+      <workItem from="1692186428410" duration="77000" />
+      <workItem from="1692186524597" duration="8434000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -131,7 +130,23 @@
       <option name="project" value="LOCAL" />
       <updated>1692168754524</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="add gen row_header from device list.">
+      <option name="closed" value="true" />
+      <created>1692180048167</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1692180048167</updated>
+    </task>
+    <task id="LOCAL-00005" summary="add gen row_header from device list.">
+      <option name="closed" value="true" />
+      <created>1692180154740</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1692180154740</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,6 +155,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add gradient support" />
     <MESSAGE value="add gen col_header from date." />
-    <option name="LAST_COMMIT_MESSAGE" value="add gen col_header from date." />
+    <MESSAGE value="add gen row_header from device list." />
+    <option name="LAST_COMMIT_MESSAGE" value="add gen row_header from device list." />
   </component>
 </project>

@@ -1,6 +1,6 @@
 use crate::config::AppConfig;
 use crate::element::{Coordinate, PointLogical, Project, ProjectRect};
-use crate::parse::PointScreen;
+use crate::parse::{C2PS, PointScreen};
 use crate::shape::{Draw, Polygon, Rectangle, Text};
 use log::log;
 use std::collections::HashMap;
@@ -8,7 +8,7 @@ use std::fmt;
 
 pub fn convert_project(
     project: &Project,
-    points_map: &HashMap<Coordinate, Vec<PointScreen>>,
+    c2ps: &C2PS,
     ac: &AppConfig,
 ) -> Vec<Box<dyn Draw>> {
     let polygons = project
@@ -35,7 +35,7 @@ pub fn convert_project(
     for (i, p) in extended_polygons.iter().enumerate() {
         result.append(&mut convert_to_vd(
             &p,
-            &points_map,
+            &c2ps,
             &format!("project_{}_{}",project.id, i),
             &project.name,
             ac,
@@ -47,7 +47,7 @@ pub fn convert_project(
 
 fn convert_to_vd(
     p: &ProjectPolygon,
-    pm: &HashMap<Coordinate, Vec<PointScreen>>,
+    c2ps: &C2PS,
     id: &String,
     name: &String,
     ac: &AppConfig,
@@ -60,8 +60,8 @@ fn convert_to_vd(
     };
 
     if is_rectangle(p) {
-        let top_left = coordinate_conversion(&p.points[0], &turn_map[&p.points[0]], &spacing,pm);
-        let bottom_right = coordinate_conversion(&p.points[2], &turn_map[&p.points[2]], &spacing,pm);
+        let top_left = coordinate_conversion(&p.points[0], &turn_map[&p.points[0]], &spacing,&c2ps);
+        let bottom_right = coordinate_conversion(&p.points[2], &turn_map[&p.points[2]], &spacing,&c2ps);
         let (width, height) = (
             bottom_right.x - top_left.x,
             bottom_right.y - top_left.y,
@@ -89,7 +89,7 @@ fn convert_to_vd(
         let polygon = Box::new(Polygon {
             id: None,
             class: vec![ProjectClass::Project.to_string()],
-            points: p.points.iter().map(|p| coordinate_conversion(p, &turn_map[p], &spacing,pm)).collect(),
+            points: p.points.iter().map(|p| coordinate_conversion(p, &turn_map[p], &spacing,&c2ps)).collect(),
         });
 
         println!("polygon: {:?}", polygon.points);
@@ -432,7 +432,7 @@ fn coordinate_conversion(
     point: &PointLogical,
     d2: &(Direction, Direction),
     spacing: &PointScreen,
-    c2p: &HashMap<Coordinate, Vec<PointScreen>>,
+    c2ps: &C2PS,
 ) -> PointScreen {
     let (dx, dy, i) = coordinate_conversion_aux(d2);
     let c = Coordinate {
@@ -440,7 +440,7 @@ fn coordinate_conversion(
         y: point.y + dy,
     };
 
-    let  p = c2p.get(&c).expect("point does doesn't in HashMap");
+    let p = c2ps.convert(&c).expect("point does doesn't in C2PS");
 
     let ps = match i {
         0 =>{

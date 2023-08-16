@@ -1,31 +1,68 @@
 use crate::config::AppConfig;
-use crate::element::{ColumnHeaders, Coordinate, Grid, RowGroup, RowHeaders};
-use crate::parse::PointScreen;
+use crate::element::{ColumnHeaders, Coordinate, Grid, LogicalUnit, PointLogical, RowHeaders};
+use crate::parse::{C2PS, c2ps, PointScreen, ScreenUnit};
 use crate::shape::{Draw, Path, Rectangle, Text};
 use std::collections::HashMap;
 
 pub fn convert_grid(
-    g: &Grid,
+    grid: &Grid,
     top_left: &PointScreen,
-    cr: i32,
     ac: &AppConfig,
-) -> (
-    Vec<Box<dyn Draw>>,
-    HashMap<Coordinate, Vec<PointScreen>>,
-    i32,
-) {
+) -> (Vec<Box<dyn Draw>>, C2PS) {
+    let para = &ac.parameters;
+    let mut vds_all: Vec<Box<dyn Draw>> = Vec::new();
+    let mut c2ps = C2PS::new();
+
+    let mut current_col_row = Coordinate { x: 0, y: 0 };
+    let mut current_top_left = top_left.clone();
+
+    for &y in grid.y_segments.iter() {
+        current_col_row.x = 0;
+        current_top_left.x = top_left.x;
+
+        for &x in grid.x_segments.iter() {
+
+            let vds =
+                convert_grid_seg(&current_top_left, &PointLogical{ x, y }, &current_col_row, ac);
+
+            c2ps.push(c2ps::Region{
+                top_left_c: current_col_row.clone(),
+                top_right_ps: current_top_left.clone(),
+                wh_c: Coordinate{x, y},
+                cell_wh_ps: PointScreen{x: para.cell_width, y: para.cell_height},
+            });
+
+            current_col_row.x += x;
+            current_top_left.x += x * para.cell_width + para.segment_spacing_width;
+
+            vds_all.extend(vds);
+        }
+        current_col_row.y += y;
+        current_top_left.y += y * para.cell_height + para.segment_spacing_height;
+    }
+
+    return (vds_all, c2ps);
+}
+pub fn convert_grid_seg(
+    top_left: &PointScreen,
+    wh: &PointLogical,
+    cp: &Coordinate,
+    ac: &AppConfig,
+) -> (Vec<Box<dyn Draw>>) {
     let para = &ac.parameters;
     let (x, y) = (top_left.x, top_left.y);
+    let (iw, ih) = (wh.x, wh.y);
+    let (cr, cc) = (cp.x, cp.y);
 
-    let mut result: Vec<Box<dyn Draw>> = Vec::new();
+    let mut vds: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
-        id: g.id.clone(),
+        id: None,
         class: Vec::new(),
         d: String::new(),
     });
 
-    let width = para.cell_width * g.iw;
-    let height = para.cell_height * g.ih;
+    let width = para.cell_width * iw;
+    let height = para.cell_height * ih;
 
     let mut d = String::new();
     d.push_str(&format!(
@@ -37,7 +74,7 @@ pub fn convert_grid(
         x,
         y
     ));
-    for i in 1..g.iw {
+    for i in 1..iw {
         d.push_str(&format!(
             "M{},{} V{}  ",
             x + i * para.cell_width,
@@ -45,7 +82,7 @@ pub fn convert_grid(
             y + height
         ))
     }
-    for j in 1..g.ih {
+    for j in 1..ih {
         d.push_str(&format!(
             "M{},{} H{}  ",
             x,
@@ -55,13 +92,16 @@ pub fn convert_grid(
     }
 
     path.d = d;
-    result.push(path);
+    vds.push(path);
 
     let mut pm: HashMap<Coordinate, Vec<PointScreen>> = HashMap::new();
-    for i in 0..g.iw {
-        for j in 0..g.ih {
+    for i in 0..iw {
+        for j in 0..ih {
             pm.insert(
-                Coordinate { x: i, y: j + cr },
+                Coordinate {
+                    x: i + cc,
+                    y: j + cr,
+                },
                 vec![
                     PointScreen {
                         x: top_left.x + i * para.cell_width,
@@ -79,18 +119,82 @@ pub fn convert_grid(
                         x: top_left.x + (i + 1) * para.cell_width,
                         y: top_left.y + j * para.cell_height,
                     },
-
                 ],
             );
         }
     }
 
-    return (result, pm, height);
+
+
+    return vds;
 }
 
 pub fn convert_column_header(
     header: &ColumnHeaders,
     origin_point: &PointScreen,
+    x_segments: &Vec<i32>,
+    ac: &AppConfig,
+) -> Vec<Box<dyn Draw>> {
+    let para = &ac.parameters;
+
+    let height = para.head_height;
+    let width = para.cell_width;
+    let spacing = para.segment_spacing_width;
+
+    let c_top_left = PointScreen {
+        x: origin_point.x,
+        y: origin_point.y - get_column_header_height(header, ac),
+    };
+
+    // x map
+    let mut x_map:Vec<(ScreenUnit,ScreenUnit)> = Vec::new();
+    {
+        let mut cx = c_top_left.x;
+        for &xs in x_segments{
+            for i in 0..xs {
+                x_map.push((cx+width*i, cx+width*(i+1))) ;
+            }
+            cx += width * xs + spacing;
+        }
+    }
+    println!("x_map: {:?}", x_map);
+
+    let mut result: Vec<Box<dyn Draw>> = Vec::new();
+    let mut hy = c_top_left.y;
+
+    for cr in header.rows.iter() {
+        let mut ci: usize= 0;
+        for c in cr.iter() {
+            let rect = Box::new(Rectangle {
+                id: None,
+                class: Vec::new(),
+                x: x_map[ci].0,
+                y: hy,
+                width: x_map[ci+c.iw as usize -1].1 - x_map[ci].0,
+                height: height,
+            });
+            result.push(rect);
+
+            let text = Box::new(Text {
+                id: None,
+                class: Vec::new(),
+                x: (x_map[ci].0 + x_map[ci+c.iw as usize -1].1) / 2,
+                y: hy + height / 2,
+                content: c.text.clone(),
+            });
+            result.push(text);
+
+            ci+=c.iw as usize;
+        }
+        hy += height;
+    }
+    return result;
+}
+
+pub fn convert_row_header(
+    header: &RowHeaders,
+    origin_point: &PointScreen,
+    y_segments: &Vec<i32>,
     ac: &AppConfig,
 ) -> Vec<Box<dyn Draw>> {
     let para = &ac.parameters;
@@ -99,69 +203,35 @@ pub fn convert_column_header(
     let width = para.cell_width;
 
     let c_top_left = PointScreen {
-        x: origin_point.x,
-        y: origin_point.y - header.rows.len() as i32 * height,
+        x: origin_point.x - get_row_header_width(header, ac),
+        y: origin_point.y,
     };
 
+    // y map
+    let mut y_map:Vec<(ScreenUnit,ScreenUnit)> = Vec::new();
+    {
+        let mut cy = c_top_left.y;
+        for &ys in y_segments{
+            for j in 0..ys {
+                y_map.push((cy +para.cell_height* j, cy +para.cell_height*(j +1))) ;
+            }
+            cy += para.cell_height * ys + para.segment_spacing_height;
+        }
+    }
+
     let mut result: Vec<Box<dyn Draw>> = Vec::new();
-    let mut hy = c_top_left.y;
-    for cr in header.rows.iter() {
-        let mut hx = c_top_left.x;
+    let mut hx = c_top_left.x;
+
+    for cr in header.cols.iter() {
+        let mut cj = 0;
         for c in cr.iter() {
             let rect = Box::new(Rectangle {
                 id: None,
                 class: Vec::new(),
                 x: hx,
-                y: hy,
-                width: c.iw * width,
-                height: height,
-            });
-            result.push(rect);
-
-            let text = Box::new(Text {
-                id: None,
-                class: Vec::new(),
-                x: hx + c.iw * width / 2,
-                y: hy + height / 2,
-                content: c.text.clone(),
-            });
-            result.push(text);
-
-            hx += c.iw * width;
-        }
-        hy += height;
-    }
-
-    return result;
-}
-
-pub fn convert_row_header(
-    row_header: &RowHeaders,
-    top_right: &PointScreen,
-    style: &AppConfig,
-) -> Vec<Box<dyn Draw>> {
-    let para = &style.parameters;
-
-    let height = para.cell_height;
-    let width = para.head_width;
-
-    let top_left = PointScreen {
-        x: top_right.x - row_header.cols.len() as i32 * width,
-        y: top_right.y,
-    };
-
-    let mut result: Vec<Box<dyn Draw>> = Vec::new();
-    let mut hx = top_left.x;
-    for cc in row_header.cols.iter() {
-        let mut hy = top_left.y;
-        for r in cc {
-            let rect = Box::new(Rectangle {
-                id: None,
-                class: Vec::new(),
-                x: hx,
-                y: hy,
+                y: y_map[cj].0,
+                height: y_map[cj +c.ih as usize -1].1 - y_map[cj].0,
                 width: width,
-                height: r.ih * height,
             });
             result.push(rect);
 
@@ -169,29 +239,24 @@ pub fn convert_row_header(
                 id: None,
                 class: Vec::new(),
                 x: hx + width / 2,
-                y: hy + r.ih * height / 2,
-                content: r.text.clone(),
+                y: (y_map[cj].0 + y_map[cj +c.ih as usize -1].1) / 2,
+                content: c.text.clone(),
             });
             result.push(text);
 
-            hy += r.ih * height;
+            cj += c.ih as usize;
         }
         hx += width;
     }
     return result;
 }
 
-pub fn compute_row_header_width(row_groups: &Vec<RowGroup>, style: &AppConfig) -> i32 {
-    let mut maxc: i32 = 0;
-    for rg in row_groups.iter() {
-        let c = rg.header.cols.len() as i32;
-        if c > maxc {
-            maxc = c;
-        }
-    }
-    return maxc * style.parameters.head_width;
+pub fn get_column_header_height(header: &ColumnHeaders, ac: &AppConfig) -> i32 {
+    let para = &ac.parameters;
+    return header.rows.len() as i32 * para.head_height;
 }
 
-pub fn compute_column_header_height(column_header: &ColumnHeaders, style: &AppConfig) -> i32 {
-    return column_header.rows.len() as i32 * style.parameters.head_height;
+pub fn get_row_header_width(header: &RowHeaders, ac: &AppConfig) -> i32 {
+    let para = &ac.parameters;
+    return header.cols.len() as i32 * para.cell_width;
 }
