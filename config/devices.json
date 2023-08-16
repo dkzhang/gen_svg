@@ -1,27 +1,24 @@
 {
   "groups": [
-    {
-      "name": "F301-303",
-      "devices": [
-        "F301",
-        "F302",
-        "F303"
-      ]
-    },
-    {
-      "name": "F40x",
-      "devices": [
-        "F401~F403",
-        "F405"
-      ]
-    },
-    {
-      "name": "F50x",
-      "devices": [
-        "F501~505",
-        "F567",
-        "F568~f570"
-      ]
-    }
+    {"name": "CPU 64",
+      "devices": ["F283~F286"]},
+    {"name": "GPU 64",
+      "devices": ["F319~F322"]},
+    {"name": "GPU 64",
+      "devices": ["F413~F416"]},
+    {"name": "CPU ",
+      "devices": ["F303~F318"]},
+    {"name": "CPU ",
+      "devices": ["F324~339"]},
+    {"name": "CPU ",
+      "devices": ["F340~355"]},
+    {"name": "CPU ",
+      "devices": ["F356~371"]},
+    {"name": "CPU ",
+      "devices": ["F373~388"]},
+    {"name": "CPU ",
+      "devices": ["F389~404"]},
+    {"name": "CPU ",
+      "devices": ["F405~412"]}
   ]
 }

@@ -84,9 +84,9 @@ fn main() {
 
     // create svg document
     let mut document = Document::new()
-        .set("width", "3840")
-        .set("height", "2160")
-        .set("viewBox", (0, 0, 3840, 2160))
+        .set("width", "38400")
+        .set("height", "21600")
+        .set("viewBox", (0, 0, 38400, 21600))
         .set("preserveAspectRatio", "xMidYMid meet")
         .set("xmlns", "http://www.w3.org/2000/svg")
         .set("xmlns:xlink", "http://www.w3.org/1999/xlink")
@@ -145,11 +145,6 @@ fn main() {
     }
 
     svg::save("image.svg", &document).unwrap();
-
-    let dl = DeviceList::load_from_json("./config/devices.json");
-    let ndl = dl.expand_abbreviation();
-    println!("{:?}", dl);
-    println!("{:?}", ndl);
 
     log::info!(
         "This is an information message from file {} at line {} .",
