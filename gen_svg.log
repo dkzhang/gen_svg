@@ -1,4 +1,4 @@
-06:47:10 [INFO] origin_point: PointScreen { x: 60, y: 20 }
-06:47:10 [INFO] This is an information message from file src\main.rs at line 239 .
-06:47:10 [WARN] This is a warning message from file src\main.rs at line 244 .
-06:47:10 [ERROR] This is an error message from file src\main.rs at line 249 .
+06:51:54 [INFO] origin_point: PointScreen { x: 60, y: 20 }
+06:51:54 [INFO] This is an information message from file src\main.rs at line 239 .
+06:51:54 [WARN] This is a warning message from file src\main.rs at line 244 .
+06:51:54 [ERROR] This is an error message from file src\main.rs at line 249 .
