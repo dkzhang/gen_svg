@@ -24,7 +24,7 @@ rect{
 }
 
 text{
-    font-family : Arial;
+    font-family: 'Microsoft YaHei Black', sans-serif;
     font-size : 10px;
     text-anchor : middle;
     fill : black;
@@ -37,4 +37,11 @@ text{
     fill-opacity : 1;
     rx:2px;
     ry:2px;
+}
+
+.project-text{
+    font-family: 'Microsoft YaHei Black', sans-serif;
+    font-size: 12px;
+    text-anchor: middle;
+    fill: white;
 }

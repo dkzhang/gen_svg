@@ -9,12 +9,14 @@
   <component name="ChangeListManager">
     <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/devices.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/devices.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/style.toml" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gen_svg.log" beforeDir="false" afterPath="$PROJECT_DIR$/gen_svg.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/image.svg" beforeDir="false" afterPath="$PROJECT_DIR$/image.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/c2ps.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/c2ps.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/grid.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/project.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/table.json" beforeDir="false" afterPath="$PROJECT_DIR$/table.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -97,7 +99,8 @@
       <workItem from="1692166551565" duration="3130000" />
       <workItem from="1692174323640" duration="8649000" />
       <workItem from="1692186428410" duration="77000" />
-      <workItem from="1692186524597" duration="9806000" />
+      <workItem from="1692186524597" duration="9850000" />
+      <workItem from="1692232127271" duration="2532000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -147,7 +150,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692195176341</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add c2ps">
+      <option name="closed" value="true" />
+      <created>1692196444195</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1692196444195</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

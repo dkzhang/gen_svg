@@ -79,7 +79,7 @@ fn convert_to_vd(
 
         let text = Box::new(Text {
             id: Some(id.clone()),
-            class: vec![],
+            class: vec![ProjectClass::ProjectText.to_string()],
             x: top_left.x + width / 2,
             y: top_left.y + height / 2,
             content: name.clone(),
@@ -99,7 +99,7 @@ fn convert_to_vd(
 
         let text = Box::new(Text {
             id: Some(id.clone()),
-            class: vec![],
+            class: vec![ProjectClass::ProjectText.to_string()],
             x: rc.x,
             y: rc.y,
             content: name.clone(),
@@ -548,6 +548,7 @@ impl fmt::Display for ProjectPolygon {
 
 pub enum ProjectClass{
     Project,
+    ProjectText,
     StatusRunning,
 }
 
@@ -556,6 +557,7 @@ impl ProjectClass{
         match self{
             ProjectClass::Project => "project".to_string(),
             ProjectClass::StatusRunning => "status_running".to_string(),
+            ProjectClass::ProjectText => "project-text".to_string(),
         }
     }
 }

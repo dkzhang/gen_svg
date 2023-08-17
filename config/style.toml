@@ -1,10 +1,10 @@
 [parameters]
 head_width = 50
-head_height = 10
+head_height = 40
 cell_width = 40
 cell_height = 30
-project_spacing_width = 2
-project_spacing_height = 2
+project_spacing_width = 3
+project_spacing_height = 3
 shape_scale_width = 0.0
 shape_scale_height = 0.0
 segment_spacing_height = 10

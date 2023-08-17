@@ -23,11 +23,11 @@ pub fn convert_grid(
         for &x in grid.x_segments.iter() {
 
             let vds =
-                convert_grid_seg(&current_top_left, &PointLogical{ x, y }, &current_col_row, ac);
+                convert_grid_seg_path(&current_top_left, &PointLogical{ x, y }, ac);
 
             c2ps.push(c2ps::Region{
                 top_left_c: current_col_row.clone(),
-                top_right_ps: current_top_left.clone(),
+                top_left_ps: current_top_left.clone(),
                 wh_c: Coordinate{x, y},
                 cell_wh_ps: PointScreen{x: para.cell_width, y: para.cell_height},
             });
@@ -43,16 +43,14 @@ pub fn convert_grid(
 
     return (vds_all, c2ps);
 }
-pub fn convert_grid_seg(
+fn convert_grid_seg_path(
     top_left: &PointScreen,
     wh: &PointLogical,
-    cp: &Coordinate,
     ac: &AppConfig,
 ) -> (Vec<Box<dyn Draw>>) {
     let para = &ac.parameters;
     let (x, y) = (top_left.x, top_left.y);
     let (iw, ih) = (wh.x, wh.y);
-    let (cr, cc) = (cp.x, cp.y);
 
     let mut vds: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
@@ -93,38 +91,6 @@ pub fn convert_grid_seg(
 
     path.d = d;
     vds.push(path);
-
-    let mut pm: HashMap<Coordinate, Vec<PointScreen>> = HashMap::new();
-    for i in 0..iw {
-        for j in 0..ih {
-            pm.insert(
-                Coordinate {
-                    x: i + cc,
-                    y: j + cr,
-                },
-                vec![
-                    PointScreen {
-                        x: top_left.x + i * para.cell_width,
-                        y: top_left.y + j * para.cell_height,
-                    },
-                    PointScreen {
-                        x: top_left.x + i * para.cell_width,
-                        y: top_left.y + (j + 1) * para.cell_height,
-                    },
-                    PointScreen {
-                        x: top_left.x + (i + 1) * para.cell_width,
-                        y: top_left.y + (j + 1) * para.cell_height,
-                    },
-                    PointScreen {
-                        x: top_left.x + (i + 1) * para.cell_width,
-                        y: top_left.y + j * para.cell_height,
-                    },
-                ],
-            );
-        }
-    }
-
-
 
     return vds;
 }

@@ -53,7 +53,7 @@ fn main() {
     let top_left = PointScreen { x: 0, y: 0 };
 
     let (col_headers, col_index_map, x_segments) =
-        from_date("20230816", "20230916");
+        from_date("20230701", "20231001");
     let (row_headers, row_index_map, y_segments) =
         from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
 
@@ -84,10 +84,10 @@ fn main() {
 
     // create svg document
     let mut document = Document::new()
-        .set("width", "38400")
-        .set("height", "21600")
-        .set("viewBox", (0, 0, 38400, 21600))
-        .set("preserveAspectRatio", "xMidYMid meet")
+        // .set("width", "38400")
+        // .set("height", "21600")
+        // .set("viewBox", (0, 0, 38400, 21600))
+        // .set("preserveAspectRatio", "xMidYMid meet")
         .set("xmlns", "http://www.w3.org/2000/svg")
         .set("xmlns:xlink", "http://www.w3.org/1999/xlink")
         .add(css_style_def)
@@ -98,6 +98,14 @@ fn main() {
     let table = Table::load_from_json(table_json);
 
     let (mut vd, c2ps) = convert_table(&table, top_left, &app_config);
+
+    let (min_x,min_y,max_x,max_y) = c2ps.get_ps_min_max();
+    let margin = 100;
+    document = document
+        .set("width", (max_x+margin).to_string())
+        .set("height", (max_y+margin).to_string())
+        .set("viewBox", (0, 0, max_x + margin, max_y + margin))
+        .set("preserveAspectRatio", "xMinYMim meet");
 
     for d in vd {
         document = document.add(d.draw());
