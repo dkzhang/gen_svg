@@ -9,7 +9,7 @@ use crate::element::{
     RowHeaders, Table,
 };
 use crate::shape::Draw;
-use std::fs;
+use std::{fmt, fs};
 use svg::Document;
 use svg::Node;
 
@@ -25,6 +25,7 @@ use crate::parse::{convert_project, PointScreen};
 use serde_json::from_reader;
 use std::io::{BufReader, Read, Write};
 use std::path::Path;
+use std::str::FromStr;
 use svg::node::element::{Definitions, Link, Style};
 
 use axum::{
@@ -35,9 +36,10 @@ use axum::{
     response::Response,
     body::Body,
 };
+use axum::extract::Query;
 use axum::http::header;
 
-use serde::{Deserialize, Serialize};
+use serde::{de, Deserialize, Deserializer, Serialize};
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -55,7 +57,8 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         // `GET /` goes to `root`
-        .route("/", get(root));
+        .route("/", get(root))
+        .route("/svg", get(get_svg));
 
     tracing::info!("Listening on 0.0.0.0:8080");
 
@@ -79,6 +82,20 @@ async fn root() -> impl IntoResponse  {
 
     return response
 }
+
+async fn get_svg(Query(params): Query<Params>) -> String {
+    format!("{:?}", params)
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+struct Params {
+    #[serde(default)]
+    start_date: Option<i32>,
+    end_date: Option<i32>,
+    location: i32,
+}
+
 
 fn create_svg() -> String {
 
