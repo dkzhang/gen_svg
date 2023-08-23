@@ -1,4 +1,6 @@
 [parameters]
+x0 = 10
+y0 = 10
 head_width = 50
 head_height = 40
 cell_width = 40

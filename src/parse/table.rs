@@ -7,7 +7,6 @@ use std::collections::HashMap;
 
 pub fn convert_table(
     t: &Table,
-    top_left: PointScreen,
     ac: &AppConfig,
 ) -> (Vec<Box<dyn Draw>>, C2PS) {
     let para = &ac.parameters;
@@ -16,8 +15,8 @@ pub fn convert_table(
 
     // compute origin position
     let origin_point = PointScreen {
-        x: top_left.x + get_row_header_width(&t.row_headers, ac),
-        y: top_left.y + get_column_header_height(&t.col_headers, ac),
+        x: para.x0 + get_row_header_width(&t.row_headers, ac),
+        y: para.y0 + get_column_header_height(&t.col_headers, ac),
     };
 
     log::info!("origin_point: {:?}", origin_point);

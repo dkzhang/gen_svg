@@ -27,6 +27,18 @@ use std::io::{BufReader, Read, Write};
 use std::path::Path;
 use svg::node::element::{Definitions, Link, Style};
 
+use axum::{
+    http::StatusCode,
+    response::IntoResponse,
+    routing::{get, post},
+    Json, Router,
+    response::Response,
+    body::Body,
+};
+use axum::http::header;
+
+use serde::{Deserialize, Serialize};
+
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
     let mut contents = String::new();
@@ -35,29 +47,48 @@ fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::
     Ok(config)
 }
 
-fn main() {
-    let log_file = File::create("gen_svg.log").unwrap();
+#[tokio::main]
+async fn main() {
+    // initialize tracing
+    tracing_subscriber::fmt::init();
 
-    CombinedLogger::init(vec![
-        TermLogger::new(
-            LevelFilter::Info,
-            Config::default(),
-            TerminalMode::Mixed,
-            ColorChoice::Auto,
-        ),
-        WriteLogger::new(LevelFilter::Info, Config::default(), log_file),
-    ])
-    .unwrap();
+    // build our application with a route
+    let app = Router::new()
+        // `GET /` goes to `root`
+        .route("/", get(root));
+
+    tracing::info!("Listening on 0.0.0.0:8080");
+
+    // run it with hyper on localhost:3000
+    axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+
+// basic handler that responds with a static string
+async fn root() -> impl IntoResponse  {
+    let svg = create_svg();
+
+    let mut response = Response::new(Body::from(svg));
+
+    response.headers_mut().insert(
+        header::CONTENT_TYPE,
+        header::HeaderValue::from_static("image/svg+xml"),
+    );
+
+    return response
+}
+
+fn create_svg() -> String {
 
     let app_config = load_config_style("./config/style.toml").unwrap();
-    let top_left = PointScreen { x: 0, y: 0 };
 
-    let (col_headers, col_index_map, x_segments) =
-        from_date("20230701", "20231001");
+    let (col_headers, col_index_map, x_segments) = from_date("20230701", "20231001");
     let (row_headers, row_index_map, y_segments) =
         from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
 
-    let table_origin = element::Table{
+    let table_origin = element::Table {
         col_headers,
         row_headers,
         grid: Grid {
@@ -97,13 +128,13 @@ fn main() {
     // write table
     let table = Table::load_from_json(table_json);
 
-    let (mut vd, c2ps) = convert_table(&table, top_left, &app_config);
+    let (mut vd, c2ps) = convert_table(&table, &app_config);
 
-    let (min_x,min_y,max_x,max_y) = c2ps.get_ps_min_max();
+    let (min_x, min_y, max_x, max_y) = c2ps.get_ps_min_max();
     let margin = 100;
     document = document
-        .set("width", (max_x+margin).to_string())
-        .set("height", (max_y+margin).to_string())
+        .set("width", (max_x + margin).to_string())
+        .set("height", (max_y + margin).to_string())
         .set("viewBox", (0, 0, max_x + margin, max_y + margin))
         .set("preserveAspectRatio", "xMinYMim meet");
 
@@ -152,7 +183,7 @@ fn main() {
         document = document.add(d.draw());
     }
 
-    svg::save("image.svg", &document).unwrap();
+    // svg::save("image.svg", &document).unwrap();
 
     log::info!(
         "This is an information message from file {} at line {} .",
@@ -169,4 +200,6 @@ fn main() {
         file!(),
         line!()
     );
+
+    return document.to_string();
 }
