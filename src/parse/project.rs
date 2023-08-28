@@ -60,8 +60,11 @@ fn convert_to_vd(
     };
 
     if is_rectangle(p) {
+        println!("p.points: {:?}", p.points);
+
         let top_left = coordinate_conversion(&p.points[0], &turn_map[&p.points[0]], &spacing,&c2ps);
         let bottom_right = coordinate_conversion(&p.points[2], &turn_map[&p.points[2]], &spacing,&c2ps);
+
         let (width, height) = (
             bottom_right.x - top_left.x,
             bottom_right.y - top_left.y,
@@ -441,6 +444,8 @@ fn coordinate_conversion(
     };
 
     let p = c2ps.convert(&c).expect("point does doesn't in C2PS");
+
+    println!("c: {:?} ||  p: {:?}",c, p);
 
     let ps = match i {
         0 =>{

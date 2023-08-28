@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -21,6 +22,7 @@ pub struct Grid {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RowHeaders {
     pub cols: Vec<Vec<RowHeaderCell>>,
+    pub row_index_map:HashMap<String,i32>,
 }
 #[derive(Serialize, Deserialize, Debug)]
 pub struct RowHeaderCell {
@@ -30,6 +32,7 @@ pub struct RowHeaderCell {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ColumnHeaders {
     pub rows: Vec<Vec<ColumnHeaderCell>>,
+    pub col_index_map:HashMap<i64,i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

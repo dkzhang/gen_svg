@@ -18,7 +18,7 @@ use simplelog::*;
 use std::fs::File;
 
 use crate::config::{AppConfig, Defs};
-use crate::gen_element::col_header::from_date;
+use crate::gen_element::col_header::{from_date70};
 use crate::gen_element::row_headers::{from_devices, DeviceGroup, DeviceList};
 use crate::parse::table::convert_table;
 use crate::parse::{convert_project, PointScreen};
@@ -28,17 +28,18 @@ use std::path::Path;
 use std::str::FromStr;
 use svg::node::element::{Definitions, Link, Style};
 
-use axum::{
-    http::StatusCode,
-    response::IntoResponse,
-    routing::{get, post},
-    Json, Router,
-    response::Response,
-    body::Body,
-};
 use axum::extract::Query;
 use axum::http::header;
+use axum::{
+    body::Body,
+    http::StatusCode,
+    response::IntoResponse,
+    response::Response,
+    routing::{get, post},
+    Json, Router,
+};
 
+use crate::gen_element::{int_to_date70, str_to_date70};
 use serde::{de, Deserialize, Deserializer, Serialize};
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
@@ -70,7 +71,7 @@ async fn main() {
 }
 
 // basic handler that responds with a static string
-async fn root() -> impl IntoResponse  {
+async fn root() -> impl IntoResponse {
     let svg = create_svg();
 
     let mut response = Response::new(Body::from(svg));
@@ -80,7 +81,7 @@ async fn root() -> impl IntoResponse  {
         header::HeaderValue::from_static("image/svg+xml"),
     );
 
-    return response
+    return response;
 }
 
 async fn get_svg(Query(params): Query<Params>) -> String {
@@ -96,13 +97,13 @@ struct Params {
     location: i32,
 }
 
-
 fn create_svg() -> String {
-
     let app_config = load_config_style("./config/style.toml").unwrap();
 
-    let (col_headers, col_index_map, x_segments) = from_date("20230701", "20231001");
-    let (row_headers, row_index_map, y_segments) =
+    let (col_headers, x_segments) =
+        from_date70(int_to_date70(20230701).unwrap(), int_to_date70(20231010).unwrap());
+
+    let (row_headers,y_segments) =
         from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
 
     let table_origin = element::Table {
@@ -146,6 +147,8 @@ fn create_svg() -> String {
     let table = Table::load_from_json(table_json);
 
     let (mut vd, c2ps) = convert_table(&table, &app_config);
+
+    println!("c2ps: {:?}", c2ps);
 
     let (min_x, min_y, max_x, max_y) = c2ps.get_ps_min_max();
     let margin = 100;
@@ -197,6 +200,19 @@ fn create_svg() -> String {
     };
     let mut project3_vd = convert_project(&project3, &c2ps, &app_config);
     for d in project3_vd {
+        document = document.add(d.draw());
+    }
+
+    let project4 = Project {
+        id: String::from("004"),
+        name: String::from("Project4"),
+        rects: vec![ProjectRect::new2(
+            Coordinate { x: 9, y: 1 },
+            &Coordinate { x: 11, y: 7 },
+        )],
+    };
+    let mut project4_vd = convert_project(&project4, &c2ps, &app_config);
+    for d in project4_vd {
         document = document.add(d.draw());
     }
 
