@@ -232,6 +232,7 @@ dependencies = [
  "axum",
  "chrono",
  "log",
+ "once_cell",
  "regex",
  "serde",
  "serde-xml-rs",

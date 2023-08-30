@@ -560,9 +560,9 @@ pub enum ProjectClass{
 impl ProjectClass{
     pub fn to_string(&self) -> String{
         match self{
-            ProjectClass::Project => "project".to_string(),
-            ProjectClass::StatusRunning => "status_running".to_string(),
-            ProjectClass::ProjectText => "project-text".to_string(),
+            ProjectClass::Project => "dk-project".to_string(),
+            ProjectClass::StatusRunning => "dk_running".to_string(),
+            ProjectClass::ProjectText => "dk-proj-text".to_string(),
         }
     }
 }

@@ -1,6 +1,6 @@
 use crate::config::AppConfig;
 use crate::element::{ColumnHeaders, Coordinate, Grid, LogicalUnit, PointLogical, RowHeaders};
-use crate::parse::{C2PS, c2ps, PointScreen, ScreenUnit};
+use crate::parse::{C2PS, c2ps, PointScreen, ProjectClass, ScreenUnit, TableClass};
 use crate::shape::{Draw, Path, Rectangle, Text};
 use std::collections::HashMap;
 
@@ -55,7 +55,7 @@ fn convert_grid_seg_path(
     let mut vds: Vec<Box<dyn Draw>> = Vec::new();
     let mut path = Box::new(Path {
         id: None,
-        class: Vec::new(),
+        class: vec![TableClass::Grid.to_string()],
         d: String::new(),
     });
 
@@ -133,7 +133,7 @@ pub fn convert_column_header(
         for c in cr.iter() {
             let rect = Box::new(Rectangle {
                 id: None,
-                class: Vec::new(),
+                class: vec![TableClass::ColumnHeader.to_string()],
                 x: x_map[ci].0,
                 y: hy,
                 width: x_map[ci+c.iw as usize -1].1 - x_map[ci].0,
@@ -143,7 +143,7 @@ pub fn convert_column_header(
 
             let text = Box::new(Text {
                 id: None,
-                class: Vec::new(),
+                class: vec![TableClass::ColumnHeaderText.to_string()],
                 x: (x_map[ci].0 + x_map[ci+c.iw as usize -1].1) / 2,
                 y: hy + height / 2,
                 content: c.text.clone(),
@@ -193,7 +193,7 @@ pub fn convert_row_header(
         for c in cr.iter() {
             let rect = Box::new(Rectangle {
                 id: None,
-                class: Vec::new(),
+                class: vec![TableClass::RowHeader.to_string()],
                 x: hx,
                 y: y_map[cj].0,
                 height: y_map[cj +c.ih as usize -1].1 - y_map[cj].0,
@@ -203,7 +203,7 @@ pub fn convert_row_header(
 
             let text = Box::new(Text {
                 id: None,
-                class: Vec::new(),
+                class: vec![TableClass::RowHeaderText.to_string()],
                 x: hx + width / 2,
                 y: (y_map[cj].0 + y_map[cj +c.ih as usize -1].1) / 2,
                 content: c.text.clone(),

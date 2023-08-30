@@ -1,5 +1,5 @@
 
-path{
+.dk-grid{
     fill: green;
     stroke : black;
     stroke-width: 1;
@@ -7,15 +7,7 @@ path{
     fill-opacity : 0.5;
 }
 
-polygon{
-    fill : green;
-    stroke : blue;
-    stroke-width : 1;
-    stroke-opacity : 1.0;
-    fill-opacity : 0.5;
-}
-
-rect{
+.dk-row-header, .dk-col-header{
     fill : white;
     stroke : black;
     stroke-width : 1;
@@ -23,7 +15,7 @@ rect{
     fill-opacity : 0.5;
 }
 
-text{
+.dk-row-header-text, .dk-col-header-text{
     font-family: 'Microsoft YaHei Black', sans-serif;
     font-size : 10px;
     text-anchor : middle;
@@ -32,14 +24,14 @@ text{
     transform: translateY(0.3em);
 }
 
-.project{
+.dk-project{
     fill: url(#gradient_blue);
     fill-opacity : 1;
     rx:2px;
     ry:2px;
 }
 
-.project-text{
+.dk-proj-text{
     font-family: 'Microsoft YaHei Black', sans-serif;
     font-size: 12px;
     text-anchor: middle;

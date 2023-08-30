@@ -37,3 +37,23 @@ pub fn convert_table(
 
     return (vd, c2ps);
 }
+
+pub enum TableClass{
+    Grid,
+    RowHeader,
+    RowHeaderText,
+    ColumnHeader,
+    ColumnHeaderText,
+}
+
+impl TableClass{
+    pub fn to_string(&self) -> String{
+        match self{
+            TableClass::Grid => "dk-grid".to_string(),
+            TableClass::RowHeader => "dk-row-header".to_string(),
+            TableClass::RowHeaderText => "dk-row-header-text".to_string(),
+            TableClass::ColumnHeader => "dk-col-header".to_string(),
+            TableClass::ColumnHeaderText => "dk-col-header-text".to_string(),
+        }
+    }
+}

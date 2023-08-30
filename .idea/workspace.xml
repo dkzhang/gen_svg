@@ -9,13 +9,15 @@
   <component name="ChangeListManager">
     <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/table.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/table.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gen_element.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gen_element/col_header.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element/col_header.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen_element/row_headers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element/row_headers.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parse/c2ps.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/c2ps.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/grid.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parse/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/project.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/table.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/table.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/table.json" beforeDir="false" afterPath="$PROJECT_DIR$/table.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -106,7 +108,8 @@
       <workItem from="1692761670377" duration="944000" />
       <workItem from="1692763235630" duration="828000" />
       <workItem from="1692771732737" duration="2635000" />
-      <workItem from="1693210009151" duration="4732000" />
+      <workItem from="1693210009151" duration="5364000" />
+      <workItem from="1693355163418" duration="5410000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -188,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1692774112166</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="add date70 and fix a bug in c2ps convert">
+      <option name="closed" value="true" />
+      <created>1693214775980</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1693214775980</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,6 +212,7 @@
     <MESSAGE value="add c2ps" />
     <MESSAGE value="add axum as web server" />
     <MESSAGE value="add axum params query" />
-    <option name="LAST_COMMIT_MESSAGE" value="add axum params query" />
+    <MESSAGE value="add date70 and fix a bug in c2ps convert" />
+    <option name="LAST_COMMIT_MESSAGE" value="add date70 and fix a bug in c2ps convert" />
   </component>
 </project>

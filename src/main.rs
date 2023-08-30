@@ -106,7 +106,7 @@ fn create_svg() -> String {
     let (row_headers,y_segments) =
         from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
 
-    let table_origin = element::Table {
+    let table = element::Table {
         col_headers,
         row_headers,
         grid: Grid {
@@ -115,9 +115,6 @@ fn create_svg() -> String {
             y_segments,
         },
     };
-
-    let table_json = "table.json";
-    table_origin.save_to_json(table_json);
 
     // read css file
     let css_content = fs::read_to_string("./config/style.css")
@@ -143,8 +140,6 @@ fn create_svg() -> String {
         .add(gradient_defs);
 
     // write shape in svg
-    // write table
-    let table = Table::load_from_json(table_json);
 
     let (mut vd, c2ps) = convert_table(&table, &app_config);
 
@@ -156,7 +151,7 @@ fn create_svg() -> String {
         .set("width", (max_x + margin).to_string())
         .set("height", (max_y + margin).to_string())
         .set("viewBox", (0, 0, max_x + margin, max_y + margin))
-        .set("preserveAspectRatio", "xMinYMim meet");
+        .set("preserveAspectRatio", "xMinYMin meet");
 
     for d in vd {
         document = document.add(d.draw());

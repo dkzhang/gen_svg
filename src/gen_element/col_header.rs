@@ -1,19 +1,20 @@
 use std::collections::HashMap;
 use crate::element::{ColumnHeaders, ColumnHeaderCell};
 use chrono::{NaiveDate, Duration, Datelike};
+use crate::gen_element::DATE70;
+
 
 pub fn from_date70(start: i64, end: i64) -> (ColumnHeaders, Vec<i32>) {
-    let date70 = NaiveDate::from_ymd_opt(1970, 1, 1).unwrap();
 
     let mut day_row:Vec<ColumnHeaderCell> = vec![];
     let mut month_row:Vec<ColumnHeaderCell> = vec![];
-    let mut cm = date70 + Duration::days(start);
+    let mut cm = *DATE70 + Duration::days(start);
     let mut cm_days = 0;
 
     let mut col_index_map:HashMap<i64,i32> = HashMap::new();
 
     for i in start..=end {
-        let current_date = date70 + Duration::days(i);
+        let current_date = *DATE70 + Duration::days(i);
 
         day_row.push(ColumnHeaderCell{
             iw: 1,
