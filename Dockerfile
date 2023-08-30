@@ -7,7 +7,7 @@ WORKDIR /usr/src
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Clone your repository
-RUN git clone https://github.com/dkzhang/gen_svg.git # 20230830-1603
+RUN git clone https://github.com/dkzhang/gen_svg.git # 20230830-1623
 
 WORKDIR /usr/src/gen_svg
 # This build step will cache your dependencies
@@ -17,7 +17,8 @@ RUN cargo install --path .
 # Second stage: the runtime environment
 FROM debian:bullseye-slim
 
-RUN apt-get update && apt-get install -y extra-runtime-dependencies && rm -rf /var/lib/apt/lists/*
+RUN #apt-get update && apt-get install -y extra-runtime-dependencies && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
 COPY --from=builder /usr/local/cargo/bin/gen_svg /usr/local/bin/gen_svg
