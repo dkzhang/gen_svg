@@ -1,11 +1,13 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+use crate::element::{CoordinateUnit};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Table {
     pub col_headers: ColumnHeaders,
     pub row_headers: RowHeaders,
     pub grid: Grid,
+    pub today: CoordinateUnit, // the col coordinate of the today line
 }
 // #[derive(Serialize, Deserialize, Debug)]
 // pub struct RowGroup {

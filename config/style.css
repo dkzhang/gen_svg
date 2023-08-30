@@ -24,6 +24,13 @@
     transform: translateY(0.3em);
 }
 
+.dk-today-line{
+    stroke : red;
+    stroke-width : 5;
+    stroke-opacity : 0.5;
+    stroke-dasharray: 16,10;
+}
+
 .dk-project{
     fill: url(#gradient_blue);
     fill-opacity : 1;

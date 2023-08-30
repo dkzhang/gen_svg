@@ -12,6 +12,7 @@ pub mod table;
 pub mod project;
 pub mod gradient;
 pub mod c2ps;
+pub mod today_line;
 
 use std::fmt;
 pub use grid::*;

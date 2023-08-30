@@ -41,6 +41,7 @@ use axum::{
 
 use crate::gen_element::{int_to_date70, str_to_date70};
 use serde::{de, Deserialize, Deserializer, Serialize};
+use crate::parse::today_line::convert_today_line;
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -114,6 +115,7 @@ fn create_svg() -> String {
             x_segments,
             y_segments,
         },
+        today: 10,
     };
 
     // read css file
@@ -208,6 +210,12 @@ fn create_svg() -> String {
     };
     let mut project4_vd = convert_project(&project4, &c2ps, &app_config);
     for d in project4_vd {
+        document = document.add(d.draw());
+    }
+
+    // today line
+    let mut today_line_vd = convert_today_line(10, &c2ps,&app_config);
+    for d in today_line_vd {
         document = document.add(d.draw());
     }
 

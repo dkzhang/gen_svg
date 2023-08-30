@@ -12,9 +12,11 @@ use crate::element::PointLogical;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Coordinate {
-    pub x: i32,
-    pub y: i32,
+    pub x: CoordinateUnit,
+    pub y: CoordinateUnit,
 }
+
+pub type CoordinateUnit = i32;
 
 #[derive(Debug, Clone, Hash)]
 pub struct ProjectRect {

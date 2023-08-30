@@ -1,8 +1,9 @@
 use crate::config::AppConfig;
-use crate::element::{ColumnHeaders, Coordinate, Grid, LogicalUnit, PointLogical, RowHeaders};
+use crate::element::{ColumnHeaders, Coordinate, CoordinateUnit, Grid, LogicalUnit, PointLogical, RowHeaders};
 use crate::parse::{C2PS, c2ps, PointScreen, ProjectClass, ScreenUnit, TableClass};
-use crate::shape::{Draw, Path, Rectangle, Text};
+use crate::shape::{Draw, Line, Path, Rectangle, Text};
 use std::collections::HashMap;
+
 
 pub fn convert_grid(
     grid: &Grid,
@@ -216,6 +217,8 @@ pub fn convert_row_header(
     }
     return result;
 }
+
+
 
 pub fn get_column_header_height(header: &ColumnHeaders, ac: &AppConfig) -> i32 {
     let para = &ac.parameters;

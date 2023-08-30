@@ -44,6 +44,7 @@ pub enum TableClass{
     RowHeaderText,
     ColumnHeader,
     ColumnHeaderText,
+    TodayLine,
 }
 
 impl TableClass{
@@ -54,6 +55,7 @@ impl TableClass{
             TableClass::RowHeaderText => "dk-row-header-text".to_string(),
             TableClass::ColumnHeader => "dk-col-header".to_string(),
             TableClass::ColumnHeaderText => "dk-col-header-text".to_string(),
+            TableClass::TodayLine => "dk-today-line".to_string(),
         }
     }
 }

@@ -17,4 +17,5 @@ pub struct Parameters {
 
     pub segment_spacing_height: i32,
     pub segment_spacing_width: i32,
+
 }
