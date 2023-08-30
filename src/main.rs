@@ -75,8 +75,19 @@ async fn main() {
 }
 
 // basic handler that responds with a static string
-async fn root() -> impl IntoResponse {
-    let svg = create_svg();
+async fn root() -> String {
+    "Hello, World!".to_string()
+}
+
+async fn get_svg(Query(dl): Query<DateDateLoc>) -> impl IntoResponse{
+    if !dl.is_valid() {
+        return Response::builder()
+            .status(StatusCode::BAD_REQUEST)
+            .body(Body::from("Invalid parameters"))
+            .unwrap();
+    }
+
+    let svg = create_svg(&dl);
 
     let mut response = Response::new(Body::from(svg));
 
@@ -88,24 +99,41 @@ async fn root() -> impl IntoResponse {
     return response;
 }
 
-async fn get_svg(Query(params): Query<Params>) -> String {
-    format!("{:?}", params)
-}
-
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
-struct Params {
+struct DateDateLoc {
     #[serde(default)]
-    start_date: Option<i32>,
-    end_date: Option<i32>,
+    start_date: i32,
+    end_date: i32,
     location: i32,
 }
 
-fn create_svg() -> String {
+impl DateDateLoc {
+    fn is_valid(&self) -> bool {
+        let start_date = int_to_date70(self.start_date);
+        let end_date = int_to_date70(self.end_date);
+
+        if start_date.is_none() || end_date.is_none() {
+            return false;
+        }
+
+        if start_date.unwrap() > end_date.unwrap() {
+            return false;
+        }
+
+        if self.location < 1 || self.location > 7 {
+            return false;
+        }
+
+        return true
+    }
+}
+
+fn create_svg(dl: &DateDateLoc) -> String {
     let app_config = load_config_style("./config/style.toml").unwrap();
 
     let (col_headers, x_segments) =
-        from_date70(int_to_date70(20230701).unwrap(), int_to_date70(20231010).unwrap());
+        from_date70(int_to_date70(dl.start_date).unwrap(), int_to_date70(dl.end_date).unwrap());
 
     let (row_headers,y_segments) =
         from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
@@ -242,3 +270,5 @@ fn create_svg() -> String {
 
     return document.to_string();
 }
+
+// http://127.0.0.1:8080/svg?start_date=20230701&end_date=20231010&location=1
