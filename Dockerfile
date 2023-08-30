@@ -15,7 +15,7 @@ RUN cargo build --release
 
 
 # Second stage: the runtime environment
-FROM debian:buster-slim
+FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y libssl-dev && rm -rf /var/lib/apt/lists/*
 
