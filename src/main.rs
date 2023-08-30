@@ -54,7 +54,10 @@ fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::
 #[tokio::main]
 async fn main() {
     // initialize tracing
-    tracing_subscriber::fmt::init();
+    // tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::INFO)
+        .init();
 
     // build our application with a route
     let app = Router::new()

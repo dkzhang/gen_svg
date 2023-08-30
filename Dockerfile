@@ -20,8 +20,10 @@ FROM debian:bullseye-slim
 RUN #apt-get update && apt-get install -y extra-runtime-dependencies && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /usr/gen_svg
 # Copy the binary from the builder stage
 COPY --from=builder /usr/local/cargo/bin/gen_svg /usr/local/bin/gen_svg
+COPY --from=builder /usr/src/gen_svg/config /usr/gen_svg/config
 
 # Set the startup command to run your binary
 CMD ["gen_svg"]
