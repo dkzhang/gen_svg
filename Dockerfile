@@ -1,14 +1,15 @@
 # First stage: build the application
 FROM rust:1.71 as builder
 
-WORKDIR /usr/src/gen_svg
+WORKDIR /usr/src
 
 # Install git
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Clone your repository
-RUN git clone https://github.com/dkzhang/gen_svg.git # 20230830-1530
+RUN git clone https://github.com/dkzhang/gen_svg.git # 20230830-1537
 
+WORKDIR /usr/src/gen_svg
 # This build step will cache your dependencies
 RUN cargo build --release
 
