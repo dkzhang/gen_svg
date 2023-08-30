@@ -8,15 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/parse/today_line.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/parameters.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/parameters.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/project.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/table.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/table.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parse.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parse/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/grid.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parse/table.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/table.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +20,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Rust File" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
@@ -107,7 +101,8 @@
       <workItem from="1692763235630" duration="828000" />
       <workItem from="1692771732737" duration="2635000" />
       <workItem from="1693210009151" duration="5364000" />
-      <workItem from="1693355163418" duration="8406000" />
+      <workItem from="1693355163418" duration="8441000" />
+      <workItem from="1693379172195" duration="469000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -205,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693364376935</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="add today line.">
+      <option name="closed" value="true" />
+      <created>1693367392671</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1693367392671</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +223,7 @@
     <MESSAGE value="add axum params query" />
     <MESSAGE value="add date70 and fix a bug in c2ps convert" />
     <MESSAGE value="modify svg class definition." />
-    <option name="LAST_COMMIT_MESSAGE" value="modify svg class definition." />
+    <MESSAGE value="add today line." />
+    <option name="LAST_COMMIT_MESSAGE" value="add today line." />
   </component>
 </project>
