@@ -18,7 +18,7 @@ use simplelog::*;
 use std::fs::File;
 
 use crate::config::{AppConfig, Defs};
-use crate::gen_element::col_header::{from_date70};
+use crate::gen_element::col_header::from_date70;
 use crate::gen_element::row_headers::{from_devices, DeviceGroup, DeviceList};
 use crate::parse::table::convert_table;
 use crate::parse::{convert_project, PointScreen};
@@ -40,8 +40,9 @@ use axum::{
 };
 
 use crate::gen_element::{int_to_date70, str_to_date70};
-use serde::{de, Deserialize, Deserializer, Serialize};
 use crate::parse::today_line::convert_today_line;
+use serde::{de, Deserialize, Deserializer, Serialize};
+use tokio::signal;
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -70,8 +71,35 @@ async fn main() {
     // run it with hyper on localhost:3000
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
         .serve(app.into_make_service())
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
+}
+
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+        let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+        let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
+
+    println!("signal received, starting graceful shutdown");
 }
 
 // basic handler that responds with a static string
@@ -79,7 +107,7 @@ async fn root() -> String {
     "Hello, World!".to_string()
 }
 
-async fn get_svg(Query(dl): Query<DateDateLoc>) -> impl IntoResponse{
+async fn get_svg(Query(dl): Query<DateDateLoc>) -> impl IntoResponse {
     if !dl.is_valid() {
         return Response::builder()
             .status(StatusCode::BAD_REQUEST)
@@ -125,17 +153,19 @@ impl DateDateLoc {
             return false;
         }
 
-        return true
+        return true;
     }
 }
 
 fn create_svg(dl: &DateDateLoc) -> String {
     let app_config = load_config_style("./config/style.toml").unwrap();
 
-    let (col_headers, x_segments) =
-        from_date70(int_to_date70(dl.start_date).unwrap(), int_to_date70(dl.end_date).unwrap());
+    let (col_headers, x_segments) = from_date70(
+        int_to_date70(dl.start_date).unwrap(),
+        int_to_date70(dl.end_date).unwrap(),
+    );
 
-    let (row_headers,y_segments) =
+    let (row_headers, y_segments) =
         from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
 
     let table = element::Table {
@@ -190,62 +220,21 @@ fn create_svg(dl: &DateDateLoc) -> String {
         document = document.add(d.draw());
     }
 
-    //write project
-    let project1 = Project {
-        id: String::from("001"),
-        name: String::from("Project1"),
-        rects: vec![
-            ProjectRect::new2(Coordinate { x: 0, y: 2 }, &Coordinate { x: 1, y: 3 }),
-            ProjectRect::new2(Coordinate { x: 2, y: 0 }, &Coordinate { x: 2, y: 3 }),
-        ],
-    };
-    let mut project1_vd = convert_project(&project1, &c2ps, &app_config);
-    for d in project1_vd {
-        document = document.add(d.draw());
-    }
+    // add projects
+    let projects = get_projects();
 
-    let project2 = Project {
-        id: String::from("002"),
-        name: String::from("Project2"),
-        rects: vec![ProjectRect::new2(
-            Coordinate { x: 3, y: 1 },
-            &Coordinate { x: 6, y: 2 },
-        )],
-    };
-    let mut project2_vd = convert_project(&project2, &c2ps, &app_config);
-    for d in project2_vd {
-        document = document.add(d.draw());
-    }
+    let mut projects_vd = projects
+        .iter()
+        .map(|p| convert_project(p, &c2ps, &app_config))
+        .flatten()
+        .collect::<Vec<Box<dyn Draw>>>();
 
-    let project3 = Project {
-        id: String::from("003"),
-        name: String::from("Project3"),
-        rects: vec![
-            ProjectRect::new2(Coordinate { x: 3, y: 3 }, &Coordinate { x: 6, y: 3 }),
-            ProjectRect::new2(Coordinate { x: 7, y: 0 }, &Coordinate { x: 8, y: 3 }),
-            ProjectRect::new2(Coordinate { x: 9, y: 0 }, &Coordinate { x: 11, y: 0 }),
-        ],
-    };
-    let mut project3_vd = convert_project(&project3, &c2ps, &app_config);
-    for d in project3_vd {
-        document = document.add(d.draw());
-    }
-
-    let project4 = Project {
-        id: String::from("004"),
-        name: String::from("Project4"),
-        rects: vec![ProjectRect::new2(
-            Coordinate { x: 9, y: 1 },
-            &Coordinate { x: 11, y: 7 },
-        )],
-    };
-    let mut project4_vd = convert_project(&project4, &c2ps, &app_config);
-    for d in project4_vd {
+    for d in projects_vd {
         document = document.add(d.draw());
     }
 
     // today line
-    let mut today_line_vd = convert_today_line(10, &c2ps,&app_config);
+    let mut today_line_vd = convert_today_line(10, &c2ps, &app_config);
     for d in today_line_vd {
         document = document.add(d.draw());
     }
@@ -269,6 +258,49 @@ fn create_svg(dl: &DateDateLoc) -> String {
     );
 
     return document.to_string();
+}
+
+fn get_projects() -> Vec<Project> {
+    let mut projects = vec![];
+
+    projects.push(Project {
+        id: String::from("001"),
+        name: String::from("Project1"),
+        rects: vec![
+            ProjectRect::new2(Coordinate { x: 0, y: 2 }, &Coordinate { x: 1, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 2, y: 0 }, &Coordinate { x: 2, y: 3 }),
+        ],
+    });
+
+    projects.push(Project {
+        id: String::from("002"),
+        name: String::from("Project2"),
+        rects: vec![ProjectRect::new2(
+            Coordinate { x: 3, y: 1 },
+            &Coordinate { x: 6, y: 2 },
+        )],
+    });
+
+    projects.push(Project {
+        id: String::from("003"),
+        name: String::from("Project3"),
+        rects: vec![
+            ProjectRect::new2(Coordinate { x: 3, y: 3 }, &Coordinate { x: 6, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 7, y: 0 }, &Coordinate { x: 8, y: 3 }),
+            ProjectRect::new2(Coordinate { x: 9, y: 0 }, &Coordinate { x: 11, y: 0 }),
+        ],
+    });
+
+    projects.push(Project {
+        id: String::from("004"),
+        name: String::from("Project4"),
+        rects: vec![ProjectRect::new2(
+            Coordinate { x: 9, y: 1 },
+            &Coordinate { x: 11, y: 7 },
+        )],
+    });
+
+    return projects;
 }
 
 // http://127.0.0.1:8080/svg?start_date=20230701&end_date=20231010&location=1
