@@ -36,7 +36,7 @@ pub fn convert_project(
         result.append(&mut convert_to_vd(
             &p,
             &c2ps,
-            &format!("project_{}_{}",project.id, i),
+            &format!("{}_{}",project.id, i),
             &project.name,
             ac,
         ));
@@ -71,7 +71,7 @@ fn convert_to_vd(
         );
 
         let rect = Box::new(Rectangle {
-            id: None,
+            id: Some(format!("project_{}", id)),
             class: vec![ProjectClass::Project.to_string()],
             x: top_left.x,
             y:top_left.y,
@@ -81,7 +81,7 @@ fn convert_to_vd(
         result.push(rect);
 
         let text = Box::new(Text {
-            id: Some(id.clone()),
+            id: Some(format!("proj_text_{}", id)),
             class: vec![ProjectClass::ProjectText.to_string()],
             x: top_left.x + width / 2,
             y: top_left.y + height / 2,
@@ -90,18 +90,18 @@ fn convert_to_vd(
         result.push(text);
     } else {
         let polygon = Box::new(Polygon {
-            id: None,
+            id: Some(format!("project_{}", id)),
             class: vec![ProjectClass::Project.to_string()],
             points: p.points.iter().map(|p| coordinate_conversion(p, &turn_map[p], &spacing,&c2ps)).collect(),
         });
 
-        println!("polygon: {:?}", polygon.points);
+        log::info!("polygon: {:?}", polygon.points);
         let rc = find_suitable_rect_center(&polygon.points);
 
         result.push(polygon);
 
         let text = Box::new(Text {
-            id: Some(id.clone()),
+            id: Some(format!("proj_text_{}", id)),
             class: vec![ProjectClass::ProjectText.to_string()],
             x: rc.x,
             y: rc.y,

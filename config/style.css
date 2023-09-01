@@ -32,15 +32,16 @@
 }
 
 .dk-project{
-    fill: url(#gradient_blue);
-    fill-opacity : 1;
+    stroke : #2E61BA;
+    stroke-width : 1;
     rx:2px;
     ry:2px;
 }
 
 .dk-proj-text{
     font-family: 'Microsoft YaHei Black', sans-serif;
-    font-size: 12px;
+    font-size: 16px;
+    font-weight: bold;
     text-anchor: middle;
-    fill: white;
+    fill: black;
 }

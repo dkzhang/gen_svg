@@ -7,8 +7,8 @@ pub struct Polygon {
     pub id: Option<String>,
     pub class: Vec<String>,
 
-    pub points: Vec<PointScreen>,
 
+    pub points: Vec<PointScreen>,
 }
 
 impl Draw for Polygon {
@@ -25,8 +25,6 @@ impl Draw for Polygon {
         };
 
         /////////////////////////////////////////////////////////////
-
-
         return Box::new(mp);
     }
 }

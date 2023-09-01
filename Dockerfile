@@ -7,7 +7,7 @@ WORKDIR /usr/src
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Clone your repository
-RUN git clone https://github.com/dkzhang/gen_svg.git # 20230830-1743
+RUN git clone https://github.com/dkzhang/gen_svg.git # 20230901-1254
 
 WORKDIR /usr/src/gen_svg
 # This build step will cache your dependencies

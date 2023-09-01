@@ -24,11 +24,13 @@ pub struct ProjectRect {
     pub bottom_right: PointLogical,
 }
 
-#[derive(Debug, Clone, Hash)]
+#[derive(Debug, Clone)]
 pub struct Project {
     pub id: String,
     pub name: String,
     pub rects : Vec<ProjectRect>,
+
+    pub metering: Vec<f64>,
 }
 
 impl ProjectRect {
