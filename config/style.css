@@ -31,13 +31,6 @@
     stroke-dasharray: 16,10;
 }
 
-.dk-project{
-    stroke : #2E61BA;
-    stroke-width : 1;
-    rx:2px;
-    ry:2px;
-}
-
 .dk-proj-text{
     font-family: 'Microsoft YaHei Black', sans-serif;
     font-size: 16px;
@@ -45,3 +38,39 @@
     text-anchor: middle;
     fill: black;
 }
+.dk-project{
+    rx:2px;
+    ry:2px;
+}
+
+.dk-project-normal{
+    stroke : #2E61BA;
+    stroke-width : 1;
+}
+
+.dk-project-expedited{
+    stroke : #FFFF00;
+    stroke-width : 5;
+}
+
+.dk-project-historical, .dk-project-running{
+    fill: url(#gradient_green);
+    fill-opacity : 1;
+}
+
+.dk-project-queued{
+    fill: url(#gradient_blue);
+    fill-opacity : 1;
+}
+
+.dk-project-delayed{
+    fill: url(#gradient_orange);
+    fill-opacity : 1;
+}
+
+.dk-project-fault{
+    fill: url(#gradient_black);
+    fill-opacity : 1;
+}
+
+

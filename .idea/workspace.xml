@@ -7,7 +7,17 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="" />
+    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/gradient.xml" beforeDir="false" afterPath="$PROJECT_DIR$/config/gradient.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bin/try_polygon.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/create_svg.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_svg.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/element/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/project.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/get_projects.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/get_projects.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/grid.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parse/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/project.rs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,6 +37,9 @@
   <component name="MacroExpansionManager">
     <option name="directoryName" value="59csyrqy" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2U3L9g7ahKilKE5mIMx2eEztqvE" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -35,21 +48,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/MyProjects/Rust/gen_svg/config&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/MyProjects/Rust/gen_svg",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
+    "settings.editor.selected.configurable": "http.proxy",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\MyProjects\Rust\gen_svg\config" />
@@ -100,7 +115,15 @@
       <workItem from="1693210009151" duration="5364000" />
       <workItem from="1693355163418" duration="8441000" />
       <workItem from="1693379172195" duration="8603000" />
-      <workItem from="1693529559429" duration="11105000" />
+      <workItem from="1693529559429" duration="11296000" />
+      <workItem from="1694679129404" duration="119000" />
+      <workItem from="1694679271984" duration="62000" />
+      <workItem from="1694679371014" duration="950000" />
+      <workItem from="1694680438126" duration="4006000" />
+      <workItem from="1694684472486" duration="35000" />
+      <workItem from="1694684571534" duration="96000" />
+      <workItem from="1694684677423" duration="69000" />
+      <workItem from="1694684767151" duration="55000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -310,7 +333,23 @@
       <option name="project" value="LOCAL" />
       <updated>1693544135268</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="add svgm for metering gradient present.">
+      <option name="closed" value="true" />
+      <created>1693544311285</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1693544311285</updated>
+    </task>
+    <task id="LOCAL-00028" summary="add svgm for metering gradient present.">
+      <option name="closed" value="true" />
+      <created>1693544328416</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1693544328416</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

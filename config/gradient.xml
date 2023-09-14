@@ -1,8 +1,26 @@
 <defs>
+    <linearGradient id="gradient_green" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#81B861;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:#6FB242;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#61A235;stop-opacity:1" />
+    </linearGradient>
+
     <linearGradient id="gradient_blue" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" style="stop-color:#6083CB;stop-opacity:1" />
         <stop offset="0%" style="stop-color:#3E70CA;stop-opacity:1" />
         <stop offset="100%" style="stop-color:#2E61BA;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient_orange" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#F18C55;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:#F67B28;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#E56B17;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="gradient_black" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#454545;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
     </linearGradient>
 
     <linearGradient id="gradient_rainbow" x1="0%" y1="0%" x2="100%" y2="0%">

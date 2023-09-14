@@ -1,5 +1,5 @@
 use crate::config::AppConfig;
-use crate::element::{Coordinate, PointLogical, Project, ProjectRect};
+use crate::element::{Coordinate, PointLogical, Project, ProjectRect, ProjectStatus};
 use crate::parse::{C2PS, PointScreen};
 use crate::shape::{Draw, Polygon, Rectangle, Text};
 use log::log;
@@ -72,7 +72,7 @@ fn convert_to_vd(
 
         let rect = Box::new(Rectangle {
             id: Some(format!("project_{}", id)),
-            class: vec![ProjectClass::Project.to_string()],
+            class: vec![],
             x: top_left.x,
             y:top_left.y,
             width,
@@ -82,7 +82,7 @@ fn convert_to_vd(
 
         let text = Box::new(Text {
             id: Some(format!("proj_text_{}", id)),
-            class: vec![ProjectClass::ProjectText.to_string()],
+            class: vec![PROJECT_TEXT.to_string()],
             x: top_left.x + width / 2,
             y: top_left.y + height / 2,
             content: name.clone(),
@@ -91,7 +91,7 @@ fn convert_to_vd(
     } else {
         let polygon = Box::new(Polygon {
             id: Some(format!("project_{}", id)),
-            class: vec![ProjectClass::Project.to_string()],
+            class: vec![],
             points: p.points.iter().map(|p| coordinate_conversion(p, &turn_map[p], &spacing,&c2ps)).collect(),
         });
 
@@ -102,7 +102,7 @@ fn convert_to_vd(
 
         let text = Box::new(Text {
             id: Some(format!("proj_text_{}", id)),
-            class: vec![ProjectClass::ProjectText.to_string()],
+            class: vec![PROJECT_TEXT.to_string()],
             x: rc.x,
             y: rc.y,
             content: name.clone(),
@@ -133,13 +133,18 @@ fn convert_rect_to_polygon(rect: &ProjectRect) -> ProjectPolygon {
         },
     ];
 
-    return ProjectPolygon { points };
+    return ProjectPolygon { points, status: rect.status.clone() };
 }
 
 fn eliminate_merge_edges(
     polygon1: &ProjectPolygon,
     polygon2: &ProjectPolygon,
 ) -> Option<ProjectPolygon> {
+    // check if they have the same status
+    if polygon1.status != polygon2.status{
+        return None;
+    }
+
     let mut result: Vec<PointLogical> = Vec::new();
 
     let points1 = &polygon1.points;
@@ -176,7 +181,7 @@ fn eliminate_merge_edges(
                     result.push(points1[k].clone());
                 }
 
-                return Some(ProjectPolygon { points: result });
+                return Some(ProjectPolygon { points: result , status: polygon1.status.clone()});
             }
         }
     }
@@ -187,6 +192,11 @@ fn eliminate_merge_edges2(
     polygon1: &ProjectPolygon,
     polygon2: &ProjectPolygon,
 ) -> Option<ProjectPolygon> {
+    // check if they have the same status
+    if polygon1.status != polygon2.status{
+        return None;
+    }
+
     let mut result: Vec<PointLogical> = Vec::new();
 
     let points1 = &polygon1.points;
@@ -233,7 +243,7 @@ fn eliminate_merge_edges2(
                     result.push(points1[k].clone());
                 }
 
-                return Some(ProjectPolygon { points: result });
+                return Some(ProjectPolygon { points: result, status:polygon1.status.clone() });
             };
         }
     }
@@ -274,7 +284,7 @@ fn extend_merge_edges(p: &ProjectPolygon) -> ProjectPolygon {
         }
     }
 
-    return ProjectPolygon { points };
+    return ProjectPolygon { points, status:p.status.clone() };
 }
 
 fn is_congruence(p1: &PointLogical, p2: &PointLogical, p3: &PointLogical) -> bool {
@@ -531,6 +541,7 @@ fn find_suitable_rect_center(vps: &Vec<PointScreen>) -> PointScreen{
 #[derive(Debug, Clone, Hash)]
 pub struct ProjectPolygon {
     pub points: Vec<PointLogical>,
+    pub status: ProjectStatus,
 }
 
 #[derive(Debug)]
@@ -551,18 +562,6 @@ impl fmt::Display for ProjectPolygon {
     }
 }
 
-pub enum ProjectClass{
-    Project,
-    ProjectText,
-    StatusRunning,
-}
+pub const PROJECT_TEXT: &str = "dk-proj-text";
 
-impl ProjectClass{
-    pub fn to_string(&self) -> String{
-        match self{
-            ProjectClass::Project => "dk-project".to_string(),
-            ProjectClass::StatusRunning => "dk_running".to_string(),
-            ProjectClass::ProjectText => "dk-proj-text".to_string(),
-        }
-    }
-}
+

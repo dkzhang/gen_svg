@@ -36,9 +36,8 @@ pub fn create_svg(dl: &DateDateLoc) -> String {
     };
 
     // read css file
-    let mut css_content = fs::read_to_string("./config/style.css")
+    let css_content = fs::read_to_string("./config/style.css")
         .expect("Something went wrong reading the css file");
-    css_content += "\n.dk-project{\n    fill: url(#gradient_blue);\n    fill-opacity : 1;\n} \n";
     let css_style_def = Definitions::new().add(Style::new(css_content));
 
     // read gradient xml file

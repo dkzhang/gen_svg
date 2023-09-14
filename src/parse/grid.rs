@@ -1,6 +1,6 @@
 use crate::config::AppConfig;
 use crate::element::{ColumnHeaders, Coordinate, CoordinateUnit, Grid, LogicalUnit, PointLogical, RowHeaders};
-use crate::parse::{C2PS, c2ps, PointScreen, ProjectClass, ScreenUnit, TableClass};
+use crate::parse::{C2PS, c2ps, PointScreen,  ScreenUnit, TableClass};
 use crate::shape::{Draw, Line, Path, Rectangle, Text};
 use std::collections::HashMap;
 
