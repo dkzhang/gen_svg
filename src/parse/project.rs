@@ -72,7 +72,7 @@ fn convert_to_vd(
 
         let rect = Box::new(Rectangle {
             id: Some(format!("project_{}", id)),
-            class: vec![],
+            class: p.status.to_vs(),
             x: top_left.x,
             y:top_left.y,
             width,
@@ -91,7 +91,7 @@ fn convert_to_vd(
     } else {
         let polygon = Box::new(Polygon {
             id: Some(format!("project_{}", id)),
-            class: vec![],
+            class: p.status.to_vs(),
             points: p.points.iter().map(|p| coordinate_conversion(p, &turn_map[p], &spacing,&c2ps)).collect(),
         });
 

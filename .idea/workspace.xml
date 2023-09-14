@@ -7,15 +7,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="">
+    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="add ProjectStatus">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/gradient.xml" beforeDir="false" afterPath="$PROJECT_DIR$/config/gradient.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bin/try_polygon.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/create_svg.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_svg.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/project.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/get_projects.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/get_projects.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parse/grid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/grid.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parse/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/project.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -123,7 +118,7 @@
       <workItem from="1694684472486" duration="35000" />
       <workItem from="1694684571534" duration="96000" />
       <workItem from="1694684677423" duration="69000" />
-      <workItem from="1694684767151" duration="55000" />
+      <workItem from="1694684767151" duration="1147000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -349,7 +344,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693544328416</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="add ProjectStatus">
+      <option name="closed" value="true" />
+      <created>1694684861398</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1694684861398</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,6 +374,7 @@
     <MESSAGE value="update Dockerfile" />
     <MESSAGE value="add get_projects and graceful_shutdown" />
     <MESSAGE value="add svgm for metering gradient present." />
-    <option name="LAST_COMMIT_MESSAGE" value="add svgm for metering gradient present." />
+    <MESSAGE value="add ProjectStatus" />
+    <option name="LAST_COMMIT_MESSAGE" value="add ProjectStatus" />
   </component>
 </project>
