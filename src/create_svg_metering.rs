@@ -4,10 +4,10 @@ use svg::Document;
 use svg::node::element::{Definitions, Style};
 use crate::{DateDateLoc, element, load_config_style, parse};
 use crate::config::Defs;
-use crate::element::Grid;
+use crate::element::{Grid, Project};
 use crate::gen_element::col_header::from_date70;
 use crate::gen_element::row_headers::{from_devices};
-use crate::get_projects::get_projects;
+use crate::get_projects::{get_projects, get_projects0};
 use crate::my_utils::date::int_to_date70;
 use crate::my_utils::device::DeviceList;
 use crate::parse::{convert_project, convert_table};
@@ -15,7 +15,7 @@ use crate::parse::today_line::convert_today_line;
 use crate::shape::Draw;
 pub fn create_svg_metering(dl: &DateDateLoc) -> String {
     let app_config = load_config_style("./config/style.toml").unwrap();
-    let projects = get_projects();
+    let projects0 = get_projects0();
 
     let (col_headers, x_segments) = from_date70(
         int_to_date70(dl.start_date).unwrap(),
@@ -40,7 +40,7 @@ pub fn create_svg_metering(dl: &DateDateLoc) -> String {
     let mut css_content = fs::read_to_string("./config/style.css")
         .expect("Something went wrong reading the css file");
 
-    for p in projects.iter(){
+    for p in projects0.iter(){
         if p.metering.len() != 0{
             css_content += &format!("\n#project_{0}_0{{\n    fill: url(#gra_proj_{0});\n    fill-opacity : 1;\n}} \n", p.id);
         }
@@ -56,7 +56,7 @@ pub fn create_svg_metering(dl: &DateDateLoc) -> String {
 
 
 
-    gradient_defs_struct = gradient_defs_struct.add_gra_for_projects(&projects);
+    gradient_defs_struct = gradient_defs_struct.add_gra_for_projects(&projects0);
 
 
     let gradient_defs = parse::gradient::convert_to_gradient(gradient_defs_struct);
@@ -91,6 +91,7 @@ pub fn create_svg_metering(dl: &DateDateLoc) -> String {
     }
 
     // add projects
+    let projects = Project::new_vec(&projects0, &table.row_headers.row_index_map,&table.col_headers.col_index_map);
 
     let mut projects_vd = projects
         .iter()

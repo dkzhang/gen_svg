@@ -32,22 +32,46 @@ pub struct Project {
 
 impl Project {
     pub fn new(
-        gp: &Project0,
-        row_index_map: HashMap<String, i32>,
-        col_index_map: HashMap<Date70, i32>,
+        project0: &Project0,
+        row_index_map: &HashMap<String, i32>,
+        col_index_map: &HashMap<Date70, i32>,
     ) -> Self {
         let mut project = Project {
-            id: gp.id.clone(),
-            name: gp.name.clone(),
+            id: project0.id.clone(),
+            name: project0.name.clone(),
             rects: vec![],
-            metering: gp.metering.clone(),
+            metering: project0.metering.clone(),
         };
 
-        for rect in gp.rects.iter() {
-            let date_from = int_to_date70(rect.date_from).unwrap();
-            let date_to = int_to_date70(rect.date_to).unwrap();
+        let date_min = col_index_map.keys().min().unwrap().clone();
+        let date_max = col_index_map.keys().max().unwrap().clone();
+
+        for rect in project0.rects.iter() {
+            let mut date_from = int_to_date70(rect.date_from).unwrap();
+            let mut date_to = int_to_date70(rect.date_to).unwrap();
+
+            // check if the rect is out of date range
+            if date_from > date_max || date_to < date_min {
+                continue;
+            }
+
+            // change the date range to the date range of the table
+            if date_from < date_min {
+                date_from = date_min;
+            }
+            if date_to > date_max {
+                date_to = date_max;
+            }
+
             let date_from_index = col_index_map.get(&date_from).unwrap().clone();
             let date_to_index = col_index_map.get(&date_to).unwrap().clone();
+
+            let d = expand_abbreviation(&rect.devices);
+            log::info!("row_index_map = {:?}", row_index_map);
+            log::info!("col_index_map = {:?}", col_index_map);
+            log::info!("date_min = {}, date_max = {}", date_min, date_max);
+            log::info!("date_from = {}, date_to = {}", date_from, date_to);
+            log::info!("expand_abbreviation(&rect.devices) = {:?}", d);
 
             let mut devices_index = expand_abbreviation(&rect.devices)
                 .iter()
@@ -56,6 +80,7 @@ impl Project {
                 .collect::<Vec<_>>();
             devices_index.sort();
 
+            // merge devices_index
             let mut a : Option<i32> = None;
             let mut b : Option<i32> = None;
 
@@ -78,8 +103,12 @@ impl Project {
                         a = Some(devices_index[i]);
                         b = Some(devices_index[i]);
                     }
+                } else{
+                    a = Some(devices_index[i]);
+                    b = Some(devices_index[i]);
                 }
             }
+            // push the last rect
             if let Some(a0) = a{
                 project.rects.push(ProjectRect::new2(
                     Coordinate {
@@ -94,8 +123,18 @@ impl Project {
                 ));
             }
         }
-
         return project;
+    }
+
+    pub fn new_vec(
+        projects0: &Vec<Project0>,
+        row_index_map: &HashMap<String, i32>,
+        col_index_map: &HashMap<Date70, i32>,
+    ) -> Vec<Project> {
+        return projects0
+            .iter()
+            .map(|gp| Project::new(gp, row_index_map, col_index_map))
+            .collect::<Vec<_>>();
     }
 }
 

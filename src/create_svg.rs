@@ -78,7 +78,10 @@ pub fn create_svg(dl: &DateDateLoc) -> String {
     }
 
     // add projects
-    let projects = get_projects();
+    let projects = get_projects(&table.row_headers.row_index_map,
+                                &table.col_headers.col_index_map);
+
+    log::info!("projects = {:?}", projects);
 
     let mut projects_vd = projects
         .iter()

@@ -10,6 +10,8 @@ pub fn from_devices(dl : &DeviceList) -> (RowHeaders, Vec<i32>){
     let mut groups:Vec<RowHeaderCell> = vec![];
     let mut devices:Vec<RowHeaderCell> = vec![];
 
+    let mut current_index = 0;
+
     for dg in &dl.groups {
         y_segments.push(dg.devices.len() as i32);
         groups.push(RowHeaderCell{
@@ -22,6 +24,9 @@ pub fn from_devices(dl : &DeviceList) -> (RowHeaders, Vec<i32>){
                 ih: 1,
                 text: d.clone(),
             });
+
+            row_index_map.insert(d.clone(), current_index);
+            current_index += 1;
         }
     }
 

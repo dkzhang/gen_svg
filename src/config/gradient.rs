@@ -1,6 +1,7 @@
 use crate::element::Project;
 use serde::{Deserialize, Deserializer};
 use std::collections::HashMap;
+use crate::get_projects::project::Project0;
 
 #[derive(Debug, Deserialize)]
 pub struct Defs {
@@ -34,7 +35,7 @@ pub struct Stop {
 }
 
 impl Defs {
-    fn add_gra_for_project(project: &Project) -> LinearGradient {
+    fn add_gra_for_project(project: &Project0) -> LinearGradient {
         let mut lg = LinearGradient {
             stop: vec![],
             attrs: HashMap::new(),
@@ -68,7 +69,7 @@ impl Defs {
         return lg;
     }
 
-    pub fn add_gra_for_projects(self, projects: &Vec<Project>) -> Self {
+    pub fn add_gra_for_projects(self, projects: &Vec<Project0>) -> Self {
         let mut lgs = self.linear_gradients.unwrap_or(vec![]);
         for p in projects.iter() {
             if p.metering.len() != 0 {
