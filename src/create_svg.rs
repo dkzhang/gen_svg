@@ -94,9 +94,12 @@ pub fn create_svg(dl: &DateDateLoc) -> String {
     }
 
     // today line
-    let mut today_line_vd = convert_today_line(10, &c2ps, &app_config);
-    for d in today_line_vd {
-        document = document.add(d.draw());
+    let today = int_to_date70(20230720).unwrap();
+    if let Some(&today_index) = table.col_headers.col_index_map.get(&today){
+        let mut today_line_vd = convert_today_line(today_index, &c2ps, &app_config);
+        for d in today_line_vd {
+            document = document.add(d.draw());
+        }
     }
 
     // svg::save("image.svg", &document).unwrap();

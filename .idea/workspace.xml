@@ -7,15 +7,8 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="add Project0 in get_projects and convert function to Project.">
-      <change afterPath="$PROJECT_DIR$/src/get_projects/mock_projects.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/config/gradient.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/config/gradient.rs" afterDir="false" />
+    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="add date check and convert.">
       <change beforePath="$PROJECT_DIR$/src/create_svg.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_svg.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/create_svg_metering.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_svg_metering.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/project.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/gen_element/row_headers.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/gen_element/row_headers.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/get_projects.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/get_projects.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -364,7 +357,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694747235658</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="add date check and convert.">
+      <option name="closed" value="true" />
+      <created>1694763179804</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1694763179804</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -388,6 +389,7 @@
     <MESSAGE value="add svgm for metering gradient present." />
     <MESSAGE value="add ProjectStatus" />
     <MESSAGE value="add Project0 in get_projects and convert function to Project." />
-    <option name="LAST_COMMIT_MESSAGE" value="add Project0 in get_projects and convert function to Project." />
+    <MESSAGE value="add date check and convert." />
+    <option name="LAST_COMMIT_MESSAGE" value="add date check and convert." />
   </component>
 </project>
