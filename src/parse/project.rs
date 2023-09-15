@@ -1,5 +1,5 @@
 use crate::config::AppConfig;
-use crate::element::{Coordinate, PointLogical, Project, ProjectRect, ProjectStatus};
+use crate::element::{Coordinate, PointLogical, Project, PROJECT_EXPEDITED, ProjectRect, ProjectStatus};
 use crate::parse::{C2PS, PointScreen};
 use crate::shape::{Draw, Polygon, Rectangle, Text};
 use log::log;
@@ -80,13 +80,23 @@ fn convert_to_vd(
         });
         result.push(rect);
 
-        let text = Box::new(Text {
-            id: Some(format!("proj_text_{}", id)),
-            class: vec![PROJECT_TEXT.to_string()],
-            x: top_left.x + width / 2,
-            y: top_left.y + height / 2,
-            content: name.clone(),
-        });
+        let text = Box::new(
+            if p.status.has(PROJECT_EXPEDITED){
+                Text {
+                    id: Some(format!("proj_text_{}", id)),
+                    class: vec![PROJECT_EXPEDITED_TEXT.to_string()],
+                    x: top_left.x + width / 2,
+                    y: top_left.y + height / 2,
+                    content: format!("↑↑↑ {}",name)
+                    }}
+        else{
+            Text {
+                id: Some(format!("proj_text_{}", id)),
+                class: vec![PROJECT_TEXT.to_string()],
+                x: top_left.x + width / 2,
+                y: top_left.y + height / 2,
+                content: name.clone()
+        }});
         result.push(text);
     } else {
         let polygon = Box::new(Polygon {
@@ -100,13 +110,23 @@ fn convert_to_vd(
 
         result.push(polygon);
 
-        let text = Box::new(Text {
-            id: Some(format!("proj_text_{}", id)),
-            class: vec![PROJECT_TEXT.to_string()],
-            x: rc.x,
-            y: rc.y,
-            content: name.clone(),
-        });
+        let text = Box::new(
+            if p.status.has(PROJECT_EXPEDITED){
+                Text {
+                    id: Some(format!("proj_text_{}", id)),
+                    class: vec![PROJECT_EXPEDITED_TEXT.to_string()],
+                    x: rc.x,
+                    y: rc.y,
+                    content: format!("↑↑↑ {}",name)
+                }}
+            else{
+                Text {
+                    id: Some(format!("proj_text_{}", id)),
+                    class: vec![PROJECT_TEXT.to_string()],
+                    x: rc.x,
+                    y: rc.y,
+                    content: name.clone()
+                }});
         result.push(text);
     }
 
@@ -563,5 +583,6 @@ impl fmt::Display for ProjectPolygon {
 }
 
 pub const PROJECT_TEXT: &str = "dk-proj-text";
+pub const PROJECT_EXPEDITED_TEXT: &str = "dk-proj-expedited-text";
 
 

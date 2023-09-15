@@ -194,6 +194,10 @@ impl ProjectStatus {
         Self(self.0 & !c)
     }
 
+    pub fn has(&self, c:u64) -> bool{
+        self.0 & c != 0
+    }
+
     pub fn to_vs(&self) -> Vec<String> {
         let mut classes = Vec::new();
         if self.0 & PROJECT_NORMAL != 0 {

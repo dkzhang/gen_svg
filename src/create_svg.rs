@@ -94,7 +94,7 @@ pub fn create_svg(dl: &DateDateLoc) -> String {
     }
 
     // today line
-    let today = int_to_date70(20230720).unwrap();
+    let today = int_to_date70(20230709).unwrap();
     if let Some(&today_index) = table.col_headers.col_index_map.get(&today){
         let mut today_line_vd = convert_today_line(today_index, &c2ps, &app_config);
         for d in today_line_vd {

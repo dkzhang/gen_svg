@@ -17,10 +17,10 @@
 
 .dk-row-header-text, .dk-col-header-text{
     font-family: 'Microsoft YaHei Black', sans-serif;
-    font-size : 10px;
+    font-size : 12px;
     text-anchor : middle;
     fill : black;
-    font-weight : normal;
+    font-weight : bold;
     transform: translateY(0.3em);
 }
 
@@ -33,11 +33,20 @@
 
 .dk-proj-text{
     font-family: 'Microsoft YaHei Black', sans-serif;
-    font-size: 16px;
+    font-size: 20px;
+    font-weight: normal;
+    text-anchor: middle;
+    fill: lightcyan;
+}
+
+.dk-proj-expedited-text{
+    font-family: 'Microsoft YaHei Black', sans-serif;
+    font-size: 24px;
     font-weight: bold;
     text-anchor: middle;
-    fill: black;
+    fill: yellow;
 }
+
 .dk-project{
     rx:2px;
     ry:2px;
