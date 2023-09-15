@@ -1,3 +1,5 @@
+pub mod project;
+
 use crate::element::{Coordinate, Project, ProjectRect, ProjectStatus, PROJECT_NORMAL, PROJECT_RUNNING, PROJECT_HISTORICAL, PROJECT_EXPEDITED, PROJECT_QUEUED};
 
 pub fn get_projects() -> Vec<Project> {

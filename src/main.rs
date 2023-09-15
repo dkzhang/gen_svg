@@ -6,6 +6,7 @@ mod shape;
 mod create_svg;
 mod create_svg_metering;
 mod get_projects;
+mod my_utils;
 
 
 use crate::shape::Draw;
@@ -31,11 +32,11 @@ use axum::{
     Json, Router,
 };
 
-use crate::gen_element::{int_to_date70};
 use serde::{Deserialize, Deserializer, Serialize};
 use tokio::signal;
 use crate::create_svg::create_svg;
 use crate::create_svg_metering::create_svg_metering;
+use crate::my_utils::date::{DateInt, int_to_date70};
 
 fn load_config_style<P: AsRef<Path>>(path: P) -> Result<AppConfig, Box<dyn std::error::Error>> {
     let mut file = File::open(path)?;
@@ -144,7 +145,7 @@ async fn get_svg_metering(Query(dl): Query<DateDateLoc>) -> impl IntoResponse {
 #[allow(dead_code)]
 pub struct DateDateLoc {
     #[serde(default)]
-    start_date: i32,
+    start_date: DateInt,
     end_date: i32,
     location: i32,
 }

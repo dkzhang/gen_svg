@@ -1,12 +1,10 @@
-use std::fmt;
 use crate::element::PointLogical;
-
-// pub enum Status {
-//     Running,
-//     Finished,
-//     Waiting,
-//     Fault,
-// }
+use crate::get_projects::project::Project0;
+use crate::my_utils::date::{Date70, int_to_date70};
+use crate::my_utils::device::expand_abbreviation;
+use std::collections::HashMap;
+use std::fmt;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Coordinate {
@@ -27,13 +25,82 @@ pub struct ProjectRect {
 pub struct Project {
     pub id: String,
     pub name: String,
-    pub rects : Vec<ProjectRect>,
+    pub rects: Vec<ProjectRect>,
 
     pub metering: Vec<f64>,
 }
 
+impl Project {
+    pub fn new(
+        gp: &Project0,
+        row_index_map: HashMap<String, i32>,
+        col_index_map: HashMap<Date70, i32>,
+    ) -> Self {
+        let mut project = Project {
+            id: gp.id.clone(),
+            name: gp.name.clone(),
+            rects: vec![],
+            metering: gp.metering.clone(),
+        };
+
+        for rect in gp.rects.iter() {
+            let date_from = int_to_date70(rect.date_from).unwrap();
+            let date_to = int_to_date70(rect.date_to).unwrap();
+            let date_from_index = col_index_map.get(&date_from).unwrap().clone();
+            let date_to_index = col_index_map.get(&date_to).unwrap().clone();
+
+            let mut devices_index = expand_abbreviation(&rect.devices)
+                .iter()
+                .map(|d| row_index_map.get(d).unwrap())
+                .cloned()
+                .collect::<Vec<_>>();
+            devices_index.sort();
+
+            let mut a : Option<i32> = None;
+            let mut b : Option<i32> = None;
+
+            for i in 0..devices_index.len(){
+                if let Some(b0) = b{
+                    if devices_index[i] == b0 + 1 {
+                        b = Some(devices_index[i]);
+                    }else{
+                        project.rects.push(ProjectRect::new2(
+                            Coordinate {
+                                x: date_from_index,
+                                y: a.unwrap(),
+                            },
+                            &Coordinate {
+                                x: date_to_index,
+                                y: b.unwrap(),
+                            },
+                            rect.status.clone(),
+                        ));
+                        a = Some(devices_index[i]);
+                        b = Some(devices_index[i]);
+                    }
+                }
+            }
+            if let Some(a0) = a{
+                project.rects.push(ProjectRect::new2(
+                    Coordinate {
+                        x: date_from_index,
+                        y: a0,
+                    },
+                    &Coordinate {
+                        x: date_to_index,
+                        y: b.unwrap(),
+                    },
+                    rect.status.clone(),
+                ));
+            }
+        }
+
+        return project;
+    }
+}
+
 impl ProjectRect {
-    pub fn new(c: &Coordinate, status:ProjectStatus) -> ProjectRect {
+    pub fn new(c: &Coordinate, status: ProjectStatus) -> ProjectRect {
         ProjectRect {
             top_left: PointLogical { x: c.x, y: c.y },
             bottom_right: PointLogical {
@@ -43,7 +110,7 @@ impl ProjectRect {
             status,
         }
     }
-    pub fn new2(c_tl: Coordinate, c_br: &Coordinate, status:ProjectStatus) -> ProjectRect {
+    pub fn new2(c_tl: Coordinate, c_br: &Coordinate, status: ProjectStatus) -> ProjectRect {
         ProjectRect {
             top_left: PointLogical {
                 x: c_tl.x,
@@ -65,56 +132,56 @@ impl fmt::Display for Coordinate {
 }
 
 pub const PROJECT_NORMAL: u64 = 1;
-pub const PROJECT_EXPEDITED:u64 = 1<<1;
-pub const PROJECT_HISTORICAL:u64 = 1<<2;
-pub const PROJECT_RUNNING:u64 = 1<<3;
-pub const PROJECT_QUEUED:u64 = 1<<4;
-pub const PROJECT_DELAYED:u64 = 1<<5;
-pub const PROJECT_FAULT:u64 = 1<<6;
+pub const PROJECT_EXPEDITED: u64 = 1 << 1;
+pub const PROJECT_HISTORICAL: u64 = 1 << 2;
+pub const PROJECT_RUNNING: u64 = 1 << 3;
+pub const PROJECT_QUEUED: u64 = 1 << 4;
+pub const PROJECT_DELAYED: u64 = 1 << 5;
+pub const PROJECT_FAULT: u64 = 1 << 6;
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProjectStatus(u64);
 
 impl ProjectStatus {
-    pub fn new(cs: Vec<u64>) -> Self{
+    pub fn new(cs: Vec<u64>) -> Self {
         Self(cs.iter().fold(0, |acc, c| acc | c))
     }
 
-    pub fn add(mut self, c: u64) -> Self{
+    pub fn add(mut self, c: u64) -> Self {
         Self(self.0 | c)
     }
 
-    pub fn remove(mut self, c: u64)-> Self{
+    pub fn remove(mut self, c: u64) -> Self {
         Self(self.0 & !c)
     }
 
-    pub fn to_vs(&self) -> Vec<String>{
+    pub fn to_vs(&self) -> Vec<String> {
         let mut classes = Vec::new();
-        if self.0 & PROJECT_NORMAL != 0{
+        if self.0 & PROJECT_NORMAL != 0 {
             classes.push("dk-project-normal".to_string());
         }
-        if self.0 & PROJECT_EXPEDITED != 0{
+        if self.0 & PROJECT_EXPEDITED != 0 {
             classes.push("dk-project-expedited".to_string());
         }
-        if self.0 & PROJECT_HISTORICAL != 0{
+        if self.0 & PROJECT_HISTORICAL != 0 {
             classes.push("dk-project-historical".to_string());
         }
-        if self.0 & PROJECT_RUNNING != 0{
+        if self.0 & PROJECT_RUNNING != 0 {
             classes.push("dk-project-running".to_string());
         }
-        if self.0 & PROJECT_QUEUED != 0{
+        if self.0 & PROJECT_QUEUED != 0 {
             classes.push("dk-project-queued".to_string());
         }
-        if self.0 & PROJECT_DELAYED != 0{
+        if self.0 & PROJECT_DELAYED != 0 {
             classes.push("dk-project-delayed".to_string());
         }
-        if self.0 & PROJECT_FAULT != 0{
+        if self.0 & PROJECT_FAULT != 0 {
             classes.push("dk-project-fault".to_string());
         }
         return classes;
     }
 
-    pub fn to_string(&self) -> String{
+    pub fn to_string(&self) -> String {
         return self.to_vs().join(" ");
     }
 }

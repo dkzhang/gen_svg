@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use crate::element::{CoordinateUnit};
+use crate::my_utils::date::Date70;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Table {
@@ -34,7 +35,7 @@ pub struct RowHeaderCell {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ColumnHeaders {
     pub rows: Vec<Vec<ColumnHeaderCell>>,
-    pub col_index_map:HashMap<i64,i32>,
+    pub col_index_map:HashMap<Date70,i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

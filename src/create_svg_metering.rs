@@ -6,9 +6,10 @@ use crate::{DateDateLoc, element, load_config_style, parse};
 use crate::config::Defs;
 use crate::element::Grid;
 use crate::gen_element::col_header::from_date70;
-use crate::gen_element::int_to_date70;
-use crate::gen_element::row_headers::{DeviceList, from_devices};
+use crate::gen_element::row_headers::{from_devices};
 use crate::get_projects::get_projects;
+use crate::my_utils::date::int_to_date70;
+use crate::my_utils::device::DeviceList;
 use crate::parse::{convert_project, convert_table};
 use crate::parse::today_line::convert_today_line;
 use crate::shape::Draw;
@@ -22,7 +23,7 @@ pub fn create_svg_metering(dl: &DateDateLoc) -> String {
     );
 
     let (row_headers, y_segments) =
-        from_devices(&DeviceList::load_from_json("./config/devices.json").expand_abbreviation());
+        from_devices(&DeviceList::load_from_json("./config/devices.json").expand_devices());
 
     let table = element::Table {
         col_headers,
