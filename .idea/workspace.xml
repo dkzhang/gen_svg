@@ -7,13 +7,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="adjust today line">
+    <list default="true" id="1448aa29-b7d6-4294-b1e4-a6741305d091" name="Changes" comment="add some mock projects">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/config/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/create_svg.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/create_svg.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/element/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/element/project.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/get_projects/mock_projects.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/get_projects/mock_projects.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parse/project.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parse/project.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,6 +117,7 @@
       <workItem from="1694684571534" duration="96000" />
       <workItem from="1694684677423" duration="69000" />
       <workItem from="1694684767151" duration="1147000" />
+      <workItem from="1694767991856" duration="435000" />
     </task>
     <task id="LOCAL-00001" summary="add gradient support">
       <option name="closed" value="true" />
@@ -378,7 +375,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694763540046</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="add some mock projects">
+      <option name="closed" value="true" />
+      <created>1694767588376</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1694767588376</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -404,6 +409,7 @@
     <MESSAGE value="add Project0 in get_projects and convert function to Project." />
     <MESSAGE value="add date check and convert." />
     <MESSAGE value="adjust today line" />
-    <option name="LAST_COMMIT_MESSAGE" value="adjust today line" />
+    <MESSAGE value="add some mock projects" />
+    <option name="LAST_COMMIT_MESSAGE" value="add some mock projects" />
   </component>
 </project>
